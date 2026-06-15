@@ -85,6 +85,9 @@ export const CompilerPage: React.FC = () => {
   };
 
   const handleLeaveSession = () => {
+    if (editorInstance) {
+      setCode(editorInstance.getValue());
+    }
     setSessionId(null);
   };
 
@@ -136,8 +139,8 @@ export const CompilerPage: React.FC = () => {
     
     const handleMetaChange = () => {
       const sharedLang = metaMap.get('language') as string;
-      if (sharedLang && sharedLang !== language) {
-        setLanguage(sharedLang);
+      if (sharedLang) {
+        setLanguage(prev => prev !== sharedLang ? sharedLang : prev);
       }
     };
     
@@ -209,9 +212,11 @@ export const CompilerPage: React.FC = () => {
     setErrorObj('');
     setExecutionTime(null);
 
+    const currentCode = editorInstance ? editorInstance.getValue() : code;
+
     try {
       const res = await axios.post<CompileResponse>('/api/compile', {
-        code,
+        code: currentCode,
         language
       });
       
