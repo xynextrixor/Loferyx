@@ -232,21 +232,71 @@ Request: ${prompt}`
     const startTime = Date.now();
 
     // --- MOCK RESPONSE FOR DEFAULT KEY / DEV ENVIRONMENTS ---
-    // This allows the applet to be fully tested functionally without needing a real API key.
+    // If we don't have a real compiler key, instead of a static mock, use Gemini API to simulate execution.
     if (apiKey === 'MY_COMPILER_API_KEY') {
-      setTimeout(() => {
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      if (!geminiApiKey || geminiApiKey === 'MY_GEMINI_API_KEY') {
+        setTimeout(() => {
+          const executionTime = Date.now() - startTime;
+          let mockOutput = 'Execution successful.\n';
+          if (code.includes('print(') || code.includes('console.log(') || code.includes('System.out.println') || code.includes('cout') || code.includes('Console.WriteLine')) {
+            mockOutput += 'Hello, World!\n';
+          }
+          res.json({
+            output: mockOutput + `\n[Provide a real COMPILER_API_KEY or GEMINI_API_KEY to see actual results.]`,
+            error: '',
+            executionTime
+          });
+        }, 500);
+        return;
+      }
+
+      try {
+        const ai = new GoogleGenAI({
+          apiKey: geminiApiKey,
+          httpOptions: {
+            headers: {
+              'User-Agent': 'aistudio-build'
+            }
+          }
+        });
+
+        const prompt = `You are a strict code executor/compiler for ${language}. Execute the following code.
+Output EXACTLY the standard output (stdout) and standard error (stderr) results that would be produced by executing this code in a standard environment.
+Do not wrap your response in markdown blocks (like \`\`\`).
+Do not add any explanation, thoughts, or preamble. Just the raw console output.
+If there is a compilation error or syntax error, output the error message exactly as a compiler or interpreter would.
+
+Code to execute:
+${code}`;
+
+        const response = await ai.models.generateContent({
+          model: 'gemini-3.5-flash',
+          contents: prompt,
+          config: {
+            temperature: 0.0
+          }
+        });
+
         const executionTime = Date.now() - startTime;
-        let mockOutput = 'Execution successful.\n';
-        if (code.includes('print(') || code.includes('console.log(') || code.includes('System.out.println') || code.includes('cout') || code.includes('Console.WriteLine')) {
-          mockOutput += 'Hello, World!\n';
+        let output = response.text || '';
+        
+        // Clean markdown block if model ignored instructions
+        if (output.startsWith('```')) {
+            output = output.replace(/```[a-z]*\n/g, '').replace(/```/g, '').trim();
         }
+
         res.json({
-          output: mockOutput + `[Mock mode enabled because COMPILER_API_KEY is default.]`,
+          output: output + '\n\n[Execution simulated using Gemini AI because COMPILER_API_KEY is not configured.]',
           error: '',
           executionTime
         });
-      }, 500);
-      return;
+        return;
+      } catch (err: any) {
+        console.error('Gemini executor simulation failed:', err.message);
+        res.status(500).json({ error: 'AI Simulation fallback failed.', details: err.message });
+        return;
+      }
     }
 
     try {
