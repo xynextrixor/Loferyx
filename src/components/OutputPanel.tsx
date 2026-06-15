@@ -1,5 +1,5 @@
 import React from 'react';
-import { Terminal, AlertCircle, Clock, CheckCircle } from 'lucide-react';
+import { Terminal, AlertCircle, Clock, CheckCircle, Wand2, Sparkles } from 'lucide-react';
 
 interface OutputPanelProps {
   output: string;
@@ -7,6 +7,7 @@ interface OutputPanelProps {
   executionTime: number | null;
   isLoading: boolean;
   status: 'idle' | 'success' | 'error' | 'loading';
+  onExplainError?: (error: string) => void;
 }
 
 export const OutputPanel: React.FC<OutputPanelProps> = ({
@@ -15,6 +16,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
   executionTime,
   isLoading,
   status,
+  onExplainError,
 }) => {
   return (
     <div className="flex flex-col h-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden" id="output-panel-outer">
@@ -102,8 +104,18 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
           {/* stderr - strictly red #E03A3E as per request */}
           {!isLoading && error && (
             <div className="space-y-1">
-              <div className="text-[10px] uppercase font-bold text-red-500 tracking-wider mb-2 select-none border-b border-red-500/30 pb-0.5 max-w-max">
-                STDERR
+              <div className="flex items-center justify-between border-b border-red-500/30 pb-1 mb-2">
+                <div className="text-[10px] uppercase font-bold text-red-500 tracking-wider select-none">
+                  STDERR
+                </div>
+                {onExplainError && (
+                  <button
+                    onClick={() => onExplainError(error)}
+                    className="flex items-center gap-1.5 px-2 py-1 text-[10px] bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded font-mono transition-colors border border-red-500/30 hover:border-red-500/50"
+                  >
+                    <Sparkles size={10} className="animate-pulse" /> EXPLAIN ERROR
+                  </button>
+                )}
               </div>
               <div className="bg-red-500/5 border border-red-500/30 p-3 rounded text-red-500 whitespace-pre-wrap font-mono leading-relaxed flex gap-2">
                 <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />

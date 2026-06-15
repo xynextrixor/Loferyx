@@ -50,6 +50,12 @@ export const Editor: React.FC<EditorProps> = ({
     });
   };
 
+  const handleEditorDidMount = (editor: any, monaco: any) => {
+    if (onMount) {
+      onMount(editor, monaco);
+    }
+  };
+
   return (
     <div className="w-full h-full border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-900" id="monaco-editor-wrapper">
       <MonacoEditor
@@ -59,7 +65,7 @@ export const Editor: React.FC<EditorProps> = ({
         value={code}
         onChange={(value) => onChange(value || '')}
         beforeMount={handleEditorWillMount}
-        onMount={onMount}
+        onMount={handleEditorDidMount}
         options={{
           readOnly: disabled,
           minimap: { enabled: false },

@@ -406,6 +406,13 @@ export const CompilerPage: React.FC = () => {
     }
   };
 
+  const handleExplainError = (errString: string) => {
+    setShowChat(true);
+    // Add the user message directly to simulation if not chatting initially
+    const errPrompt = `I received this error when running my code. Please explain what it means and how I can fix it:\n\n${errString}`;
+    handleChatSubmit(undefined, errPrompt);
+  };
+
   // Custom regex-powered clean Markdown element parser
   const renderFormattedExplanation = (md: string) => {
     if (!md) return <p className="text-gray-600 dark:text-gray-400 text-xs font-mono animate-pulse">Consulting retro brain circuits...</p>;
@@ -743,7 +750,8 @@ export const CompilerPage: React.FC = () => {
             error={errorObj} 
             executionTime={executionTime} 
             isLoading={isLoading} 
-            status={status} 
+            status={status}
+            onExplainError={handleExplainError}
           />
         </section>
         </Panel>
@@ -889,7 +897,8 @@ export const CompilerPage: React.FC = () => {
                 error={errorObj} 
                 executionTime={executionTime} 
                 isLoading={isLoading} 
-                status={status} 
+                status={status}
+                onExplainError={handleExplainError}
               />
             </section>
           </div>
