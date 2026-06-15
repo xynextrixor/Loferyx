@@ -4,7 +4,7 @@
   "description": "Minimal y-websocket signaling server for real-time collaboration",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "y-websocket"
   },
   "dependencies": {
     "ws": "^8.16.0",

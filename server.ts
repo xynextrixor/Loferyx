@@ -7,10 +7,7 @@ import 'dotenv/config';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import { WebSocketServer } from 'ws';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const YWsUtils = require('y-websocket/bin/utils');
+import YWsUtils from 'y-websocket/bin/utils';
 const { setupWSConnection } = YWsUtils;
 
 import fs from 'fs';
