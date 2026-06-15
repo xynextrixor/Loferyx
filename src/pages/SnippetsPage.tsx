@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Copy, Check, Sun, Moon } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Editor } from '../components/Editor';
+import { useTheme } from '../hooks/useTheme';
 
 interface Snippet {
   id: string;
@@ -90,6 +91,7 @@ export const SnippetsPage: React.FC = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>('python');
   const [loadingLanguage, setLoadingLanguage] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { isDark, toggleTheme } = useTheme();
 
   const handleCopy = (code: string, id: string) => {
     navigator.clipboard.writeText(code);
@@ -116,21 +118,24 @@ export const SnippetsPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col font-body-md">
-      <header className="border-b border-zinc-800 bg-zinc-900 sticky top-0 z-50">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white flex flex-col font-body-md">
+      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/" className="p-2 hover:bg-zinc-800 rounded-lg text-gray-400 hover:text-white transition-colors">
+            <Link to="/" className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-lg text-gray-600 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
               <ArrowLeft size={20} />
             </Link>
             <h1 className="font-headline-md text-lg font-bold">Code Snippets Collection</h1>
+            <button onClick={toggleTheme} className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-lg text-gray-600 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white transition-colors ml-2" title="Toggle Theme">
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
           </div>
-          <div className="flex bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+          <div className="flex bg-zinc-50 dark:bg-zinc-950 p-1 rounded-lg border border-zinc-200 dark:border-zinc-800">
              {languages.map(lang => (
                <button
                  key={lang.id}
                  onClick={() => handleLanguageClick(lang.id)}
-                 className={"px-3 py-1.5 text-sm font-medium rounded-md transition-colors flex items-center justify-center min-w-[80px] " + (selectedLanguage === lang.id ? 'bg-zinc-800 text-white shadow-sm' : 'text-gray-400 hover:text-white')}
+                 className={"px-3 py-1.5 text-sm font-medium rounded-md transition-colors flex items-center justify-center min-w-[80px] " + (selectedLanguage === lang.id ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-white')}
                >
                  {loadingLanguage === lang.id ? (
                    <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
@@ -147,7 +152,7 @@ export const SnippetsPage: React.FC = () => {
         <div className="space-y-12">
           {categories.map(category => (
             <div key={category} className="space-y-6">
-              <h2 className="text-xl font-bold border-b border-zinc-800 pb-2">{category}</h2>
+              <h2 className="text-xl font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2">{category}</h2>
               <motion.div
                   key={selectedLanguage}
                   initial={{ opacity: 0, y: 10 }}
@@ -160,12 +165,12 @@ export const SnippetsPage: React.FC = () => {
                   const isCopied = copiedId === snippet.id;
 
                   return (
-                    <div key={snippet.id} className="border border-zinc-800 rounded-xl bg-zinc-900 overflow-hidden flex flex-col">
-                      <div className="bg-zinc-950 px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
+                    <div key={snippet.id} className="border border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden flex flex-col">
+                      <div className="bg-zinc-50 dark:bg-zinc-950 px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
                         <h3 className="font-medium">{snippet.title}</h3>
                         <button
                           onClick={() => handleCopy(code, snippet.id)}
-                          className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-white bg-zinc-900 border border-zinc-700 hover:border-zinc-500 px-2.5 py-1.5 rounded transition-all"
+                          className="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-white bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-500 px-2.5 py-1.5 rounded transition-all"
                         >
                           {isCopied ? (
                             <>
@@ -190,7 +195,7 @@ export const SnippetsPage: React.FC = () => {
                            />
                          </div>
                       </div>
-                      <div className="bg-zinc-950 px-4 py-2 border-t border-zinc-800 flex justify-end">
+                      <div className="bg-zinc-50 dark:bg-zinc-950 px-4 py-2 border-t border-zinc-200 dark:border-zinc-800 flex justify-end">
                          <Link 
                            to={`/compiler?lang=${selectedLanguage}`} 
                            onClick={() => sessionStorage.setItem('temp_snippet_code', code)}

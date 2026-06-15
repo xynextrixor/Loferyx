@@ -51,7 +51,7 @@ export const Editor: React.FC<EditorProps> = ({
   };
 
   return (
-    <div className="w-full h-full border border-zinc-800 rounded-lg overflow-hidden bg-zinc-900" id="monaco-editor-wrapper">
+    <div className="w-full h-full border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-900" id="monaco-editor-wrapper">
       <MonacoEditor
         height="100%"
         language={getMonacoLanguage(language)}

@@ -11,7 +11,7 @@ const CODE_LINES = [
     { text: 'compiler.loadLanguage("javascript");', color: 'text-yellow-400' },
     { text: 'compiler.compile(sourceCode);', color: 'text-purple-400' },
     { text: 'compiler.execute();', color: 'text-green-400' },
-    { text: 'console.log("Program Executed Successfully");', color: 'text-white' },
+    { text: 'console.log("Program Executed Successfully");', color: 'text-zinc-900 dark:text-white' },
 ];
 
 export const ScrollCodeAnimation: React.FC = () => {
@@ -153,12 +153,12 @@ export const ScrollCodeAnimation: React.FC = () => {
                                 Interactive Build Process
                             </div>
                             
-                            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight">
+                            <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4 md:mb-6 leading-tight">
                                 Build as you <br/>
                                 <span className="text-[#00FF66] italic">Scroll.</span>
                             </h2>
                             
-                            <p className="text-gray-400 text-sm md:text-lg leading-relaxed mb-6 md:mb-8">
+                            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-lg leading-relaxed mb-6 md:mb-8">
                                 Watch the compiler process your instructions in real-time. Our optimized runtime ensures immediate execution feedback, complete with retro-futuristic styling and modern performance.
                             </p>
 

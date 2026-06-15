@@ -1,22 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ScrollCodeCompiler } from '../components/ScrollCodeCompiler';
+import { useTheme } from '../hooks/useTheme';
+import { Sun, Moon } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
+    const { isDark, toggleTheme } = useTheme();
     return (
-        <div className="antialiased min-h-screen flex flex-col font-body-md text-text-body-md bg-background text-on-surface w-full overflow-x-hidden">
+        <div className="antialiased min-h-screen flex flex-col font-body-md text-text-body-md bg-zinc-50 dark:bg-background text-zinc-900 dark:text-on-surface w-full overflow-x-hidden">
             {/* TopNavBar */}
-            <nav className="fixed top-0 w-full z-50 bg-surface/70 dark:bg-surface/70 backdrop-blur-md border-b border-white/10">
+            <nav className="fixed top-0 w-full z-50 bg-zinc-100/70 dark:bg-surface/70 backdrop-blur-md border-b border-black/10 dark:border-white/10">
                 <div className="flex justify-between items-center px-4 md:px-margin-desktop py-unit-md max-w-container-max mx-auto">
-                    <Link to="/" className="h-10">
+                    <Link to="/" className="h-10 flex items-center">
                         <img src="/logo.svg" alt="LOFERYX" className="h-full object-contain" />
                     </Link>
                     <div className="hidden md:flex items-center gap-8">
-                        <Link to="/snippets" className="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer">Snippets</Link>
-                        <button onClick={() => document.getElementById('languages')?.scrollIntoView({behavior: 'smooth'})} className="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer bg-transparent border-none">Languages</button>
-                        <button onClick={() => document.getElementById('ai')?.scrollIntoView({behavior: 'smooth'})} className="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer bg-transparent border-none">AI</button>
+                        <Link to="/snippets" className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer">Snippets</Link>
+                        <button onClick={() => document.getElementById('languages')?.scrollIntoView({behavior: 'smooth'})} className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer bg-transparent border-none">Languages</button>
+                        <button onClick={() => document.getElementById('ai')?.scrollIntoView({behavior: 'smooth'})} className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer bg-transparent border-none">AI</button>
+                        <button onClick={toggleTheme} className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer bg-transparent border-none flex items-center" title="Toggle Theme">
+                            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                        </button>
                     </div>
-                    <Link to="/compiler" className="bg-[#00c950] text-white transition-all duration-200 ease-in-out px-6 py-2 rounded-md font-label-md hidden md:block">
+                    <Link to="/compiler" className="bg-[#00c950] text-zinc-900 dark:text-white transition-all duration-200 ease-in-out px-6 py-2 rounded-md font-label-md hidden md:block">
                         Launch Compiler
                     </Link>
                 </div>
@@ -26,7 +32,7 @@ export const LandingPage: React.FC = () => {
                 {/* Hero Section */}
                 <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-unit-xl md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div className="flex flex-col gap-8 z-10">
-                        <h1 className="font-display-lg text-[48px] md:text-[64px] font-bold leading-tight text-white tracking-tighter mb-2">
+                        <h1 className="font-display-lg text-[48px] md:text-[64px] font-bold leading-tight text-zinc-900 dark:text-white tracking-tighter mb-2">
                             Code Compiler. <br/>
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ff8c82]">Retro Style.</span> <br/>
                             Instant Execution.
@@ -35,11 +41,11 @@ export const LandingPage: React.FC = () => {
                             Experience the raw speed of a modern compiler with the aesthetic purity of classic machines. Write, test, and deploy Python, JavaScript, Java, C++, and C# in milliseconds.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-4">
-                            <Link to="/compiler" className="bg-[#00c950] text-white transition-all duration-200 ease-in-out px-8 py-3 rounded-md font-body-md font-medium flex items-center gap-2">
+                            <Link to="/compiler" className="bg-[#00c950] text-zinc-900 dark:text-white transition-all duration-200 ease-in-out px-8 py-3 rounded-md font-body-md font-medium flex items-center gap-2">
                                 <span className="material-symbols-outlined text-[18px]">terminal</span>
                                 Launch Compiler
                             </Link>
-                            <button className="btn-secondary px-8 py-3 rounded-md font-body-md font-medium text-white">
+                            <button className="btn-secondary px-8 py-3 rounded-md font-body-md font-medium text-zinc-900 dark:text-white">
                                 Learn More
                             </button>
                         </div>
@@ -53,7 +59,7 @@ export const LandingPage: React.FC = () => {
                 
                 {/* Languages Section */}
                 <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-unit-xl" id="languages">
-                    <h2 className="font-headline-lg text-headline-lg text-white mb-12 text-center">Supported Languages</h2>
+                    <h2 className="font-headline-lg text-headline-lg text-zinc-900 dark:text-white mb-12 text-center">Supported Languages</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         {/* Lang Cards */}
                         <Link to="/compiler?lang=python" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-transform duration-300 hover:-translate-y-1">
@@ -89,7 +95,7 @@ export const LandingPage: React.FC = () => {
                                     <span className="material-symbols-outlined text-[16px] text-[#61BB46]">smart_toy</span>
                                     <span className="font-label-md text-label-md text-[#61BB46]">Beta</span>
                                 </div>
-                                <h2 className="font-headline-lg text-headline-lg text-white mb-4">AI-Powered Companion</h2>
+                                <h2 className="font-headline-lg text-headline-lg text-zinc-900 dark:text-white mb-4">AI-Powered Companion</h2>
                                 <p className="font-body-lg text-body-lg text-on-surface-variant mb-8">
                                     Write code faster with an intelligent assistant that understands your context and anticipates your needs.
                                 </p>
@@ -129,21 +135,21 @@ export const LandingPage: React.FC = () => {
                             <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-2">
                                 <span className="material-symbols-outlined text-primary">bolt</span>
                             </div>
-                            <h3 className="font-headline-md text-headline-md font-semibold text-white">Fast Execution</h3>
+                            <h3 className="font-headline-md text-headline-md font-semibold text-zinc-900 dark:text-white">Fast Execution</h3>
                             <p className="font-body-md text-on-surface-variant leading-relaxed">Sub-millisecond compilation times across all supported languages, powered by optimized runtime environments.</p>
                         </div>
                         <div className="glass-card rounded-xl p-8 flex flex-col gap-4 border border-white/5 hover:border-white/10 transition-colors">
                             <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-2">
                                 <span className="material-symbols-outlined text-primary">visibility</span>
                             </div>
-                            <h3 className="font-headline-md text-headline-md font-semibold text-white">Real-time Output</h3>
+                            <h3 className="font-headline-md text-headline-md font-semibold text-zinc-900 dark:text-white">Real-time Output</h3>
                             <p className="font-body-md text-on-surface-variant leading-relaxed">See the results of your code instantly as you type. No need to constantly hit refresh or recompile.</p>
                         </div>
                         <div className="glass-card rounded-xl p-8 flex flex-col gap-4 border border-white/5 hover:border-white/10 transition-colors">
                             <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-2">
                                 <span className="material-symbols-outlined text-primary">lock</span>
                             </div>
-                            <h3 className="font-headline-md text-headline-md font-semibold text-white">Secure Compilation</h3>
+                            <h3 className="font-headline-md text-headline-md font-semibold text-zinc-900 dark:text-white">Secure Compilation</h3>
                             <p className="font-body-md text-on-surface-variant leading-relaxed">Execute unknown code safely in isolated, ephemeral sandboxes protecting your host environment.</p>
                         </div>
                         <Link to="/snippets" className="glass-card glow-effect rounded-xl p-8 flex flex-col gap-4 border border-white/5 cursor-pointer transition-all duration-300 hover:-translate-y-1 block">
@@ -151,7 +157,7 @@ export const LandingPage: React.FC = () => {
                                 <span className="material-symbols-outlined text-primary">code_blocks</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <h3 className="font-headline-md text-headline-md font-semibold text-white">Algorithms & Snippets</h3>
+                                <h3 className="font-headline-md text-headline-md font-semibold text-zinc-900 dark:text-white">Algorithms & Snippets</h3>
                                 <div className="bg-primary/10 text-primary text-xs font-bold px-2 py-1 rounded-sm uppercase tracking-wider">Browse</div>
                             </div>
                             <p className="font-body-md text-on-surface-variant leading-relaxed">Access our ready-to-use collection of sorting algorithms (Quick, Bubble) and foundational basic snippets in multiple languages with quick copy support.</p>

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 @import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
 @source "./";
 
 @theme {
@@ -123,9 +124,14 @@ body {
 }
 
 .glass-card {
-  background: rgba(28, 28, 30, 0.4);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass-card {
+  background: rgba(28, 28, 30, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .btn-primary {

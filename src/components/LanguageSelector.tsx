@@ -24,11 +24,11 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         value={selectedLanguage}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="w-full sm:w-48 bg-zinc-900 text-white border border-zinc-800 rounded-lg px-4 py-2 text-xs font-mono font-semibold tracking-wider hover:border-red-500 focus:border-red-500 focus:outline-none transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none pr-8"
+        className="w-full sm:w-48 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-xs font-mono font-semibold tracking-wider hover:border-red-500 focus:border-red-500 focus:outline-none transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none pr-8"
       >
         {languages.length > 0 ? (
           languages.map((lang) => (
-            <option key={lang.id} value={lang.id} className="bg-zinc-900 text-white py-2">
+            <option key={lang.id} value={lang.id} className="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white py-2">
               {lang.name.toUpperCase()}
             </option>
           ))
@@ -42,7 +42,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           </>
         )}
       </select>
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-600 dark:text-gray-400">
         <svg
           className="w-4 h-4"
           fill="none"

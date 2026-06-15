@@ -68,15 +68,15 @@ export const ScrollCodeCompiler: React.FC = () => {
                 </div>
                 <div className="font-code-md text-[12px] text-on-surface-variant">main.js - Loferyx Compiler</div>
                 <div className="flex gap-2">
-                    <button className="bg-[#E03A3E] text-white px-4 py-1 rounded text-[12px] font-medium flex items-center gap-1 hover:bg-[#E03A3E]/90 transition-colors">
+                    <button className="bg-[#E03A3E] text-zinc-900 dark:text-white px-4 py-1 rounded text-[12px] font-medium flex items-center gap-1 hover:bg-[#E03A3E]/90 transition-colors">
                         <span className="material-symbols-outlined text-[14px]">play_arrow</span> Run
                     </button>
                 </div>
             </div>
             {/* Editor Body */}
             <div className="flex flex-col md:flex-row flex-1">
-                <div className="flex-[2] bg-[#161618] p-4 font-code-md text-code-md text-gray-300 overflow-x-auto border-r border-white/5">
-                    <pre className="!bg-transparent m-0 p-0 text-gray-300 whitespace-pre">
+                <div className="flex-[2] bg-[#161618] p-4 font-code-md text-code-md text-gray-700 dark:text-gray-300 overflow-x-auto border-r border-white/5">
+                    <pre className="!bg-transparent m-0 p-0 text-gray-700 dark:text-gray-300 whitespace-pre">
                         <code dangerouslySetInnerHTML={{ __html: highlight(displayedCode) }} />
                         <span className="inline-block w-2 h-[1em] bg-[#E03A3E] align-middle animate-pulse ml-[2px]"></span>
                     </pre>
@@ -84,7 +84,7 @@ export const ScrollCodeCompiler: React.FC = () => {
                 {/* Output Area */}
                 <div className="flex-1 bg-surface-container-lowest p-4 font-code-md text-code-md flex flex-col">
                     <div className="text-on-surface-variant text-[12px] mb-2 uppercase tracking-wider">Output</div>
-                    <div className="text-white text-sm">
+                    <div className="text-zinc-900 dark:text-white text-sm">
                         &gt; Result: 832040<br/>
                         &gt; Time: 12.45ms<br/>
                         <span className="text-[#61BB46] mt-2 block">✓ Execution completed successfully.</span>

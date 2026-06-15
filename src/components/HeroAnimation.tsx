@@ -58,7 +58,7 @@ export const HeroAnimation: React.FC = () => {
                     <div className="w-3 h-3 rounded-full bg-[#ffbd2e]/80"></div>
                     <div className="w-3 h-3 rounded-full bg-[#27c93f]/80"></div>
                 </div>
-                <div className="flex-1 text-center text-xs text-gray-400 font-mono">bubble_sort.py</div>
+                <div className="flex-1 text-center text-xs text-gray-600 dark:text-gray-400 font-mono">bubble_sort.py</div>
             </div>
             
             {/* Editor Area */}
@@ -68,7 +68,7 @@ export const HeroAnimation: React.FC = () => {
                     dangerouslySetInnerHTML={{ __html: lineNumbers }}
                 />
                 <div className="flex-1 p-4 overflow-y-auto text-[13px] leading-relaxed">
-                    <pre className="!bg-transparent m-0 p-0 whitespace-pre-wrap break-words text-gray-300">
+                    <pre className="!bg-transparent m-0 p-0 whitespace-pre-wrap break-words text-gray-700 dark:text-gray-300">
                         <code dangerouslySetInnerHTML={{ __html: highlight(displayedCode) }} />
                         <span className="inline-block w-2 h-[1em] bg-[#E03A3E] align-middle animate-pulse ml-[2px]"></span>
                     </pre>

@@ -17,12 +17,12 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
   status,
 }) => {
   return (
-    <div className="flex flex-col h-full bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden" id="output-panel-outer">
+    <div className="flex flex-col h-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden" id="output-panel-outer">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-800 bg-zinc-950">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
         <div className="flex items-center gap-2">
           <Terminal size={14} className="text-red-500" />
-          <span className="font-mono text-xs font-semibold uppercase tracking-widest text-white">
+          <span className="font-mono text-xs font-semibold uppercase tracking-widest text-zinc-900 dark:text-white">
             Execution Console
           </span>
         </div>
@@ -30,7 +30,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
         {/* Status indicator badges */}
         <div className="flex items-center gap-3">
           {isLoading ? (
-            <div className="flex items-center gap-1.5 font-mono text-[10px] text-gray-400">
+            <div className="flex items-center gap-1.5 font-mono text-[10px] text-gray-600 dark:text-gray-400">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
               <span>RUNNING...</span>
             </div>
@@ -45,14 +45,14 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
               <span>FAILED</span>
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 font-mono text-[10px] text-gray-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-zinc-800" />
+            <div className="flex items-center gap-1.5 font-mono text-[10px] text-gray-600 dark:text-gray-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
               <span>READY</span>
             </div>
           )}
 
           {executionTime !== null && !isLoading && (
-            <div className="flex items-center gap-1 font-mono text-[10px] bg-zinc-950 border border-zinc-800 px-2 py-0.5 rounded text-gray-400">
+            <div className="flex items-center gap-1 font-mono text-[10px] bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded text-gray-600 dark:text-gray-400">
               <Clock size={10} className="text-green-500" />
               <span>{executionTime}ms</span>
             </div>
@@ -61,10 +61,10 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
       </div>
 
       {/* Output Console Body */}
-      <div className="flex-1 p-5 font-mono text-xs overflow-auto custom-scrollbar bg-zinc-900 min-h-0 flex flex-col justify-between">
+      <div className="flex-1 p-5 font-mono text-xs overflow-auto custom-scrollbar bg-zinc-100 dark:bg-zinc-900 min-h-0 flex flex-col justify-between">
         <div className="space-y-4">
           {isLoading && (
-            <div className="space-y-2 text-gray-400">
+            <div className="space-y-2 text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-2">
                 <span className="text-red-500 animate-pulse">&gt;</span>
                 <span>Initializing sandboxed workspace...</span>
@@ -75,13 +75,13 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-green-500 animate-pulse">&gt;</span>
-                <span className="text-white font-semibold">Running program...</span>
+                <span className="text-zinc-900 dark:text-white font-semibold">Running program...</span>
               </div>
             </div>
           )}
 
           {!isLoading && !output && !error && (
-            <div className="text-gray-400 italic text-center py-10 flex flex-col items-center justify-center gap-2">
+            <div className="text-gray-600 dark:text-gray-400 italic text-center py-10 flex flex-col items-center justify-center gap-2">
               <span className="text-zinc-800 text-2xl">&lt;/&gt;</span>
               <span>Awaiting code compilation. Press 'RUN CODE' to execute.</span>
             </div>
@@ -90,10 +90,10 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
           {/* stdout - strictly white as per request */}
           {!isLoading && output && (
             <div className="space-y-1">
-              <div className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-2 select-none border-b border-zinc-800 pb-0.5 max-w-max">
+              <div className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400 tracking-wider mb-2 select-none border-b border-zinc-200 dark:border-zinc-800 pb-0.5 max-w-max">
                 STDOUT
               </div>
-              <pre className="text-white whitespace-pre-wrap font-mono leading-relaxed bg-zinc-950 p-3 border border-zinc-800/50 rounded break-all">
+              <pre className="text-zinc-900 dark:text-white whitespace-pre-wrap font-mono leading-relaxed bg-zinc-50 dark:bg-zinc-950 p-3 border border-zinc-800/50 rounded break-all">
                 {output}
               </pre>
             </div>
@@ -115,7 +115,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
 
         {/* Console status footer */}
         {!isLoading && (output || error) && (
-          <div className="border-t border-zinc-800/30 pt-3 mt-4 text-[10px] text-gray-400 flex justify-between tracking-wide">
+          <div className="border-t border-zinc-800/30 pt-3 mt-4 text-[10px] text-gray-600 dark:text-gray-400 flex justify-between tracking-wide">
             <span>RUN COMPLETED SUCCESSFULLY</span>
             <span>END OF STREAM</span>
           </div>
