@@ -191,7 +191,11 @@ export const SnippetsPage: React.FC = () => {
                          </div>
                       </div>
                       <div className="bg-zinc-950 px-4 py-2 border-t border-zinc-800 flex justify-end">
-                         <Link to={`/compiler?lang=${selectedLanguage}`} state={{ initialCode: code }} className="text-xs text-red-400 hover:text-red-300 transition-colors uppercase tracking-wider font-bold">
+                         <Link 
+                           to={`/compiler?lang=${selectedLanguage}`} 
+                           onClick={() => sessionStorage.setItem('temp_snippet_code', code)}
+                           className="text-xs text-red-400 hover:text-red-300 transition-colors uppercase tracking-wider font-bold"
+                         >
                            Open in Compiler
                          </Link>
                       </div>

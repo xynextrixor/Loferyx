@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 gsap.registerPlugin(ScrollTrigger);
 
 const CODE_LINES = [
-    { text: 'const compiler = new RetroCompiler();', color: 'text-blue-400' },
+    { text: 'const compiler = new LoferyxCompiler();', color: 'text-blue-400' },
     { text: 'compiler.loadLanguage("javascript");', color: 'text-yellow-400' },
     { text: 'compiler.compile(sourceCode);', color: 'text-purple-400' },
     { text: 'compiler.execute();', color: 'text-green-400' },

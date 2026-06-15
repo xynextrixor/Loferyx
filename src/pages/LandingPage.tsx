@@ -161,7 +161,7 @@ export const LandingPage: React.FC = () => {
                 
                 {/* Footer Area */}
                 <footer className="w-full border-t border-[#18181B] py-8 text-center mt-auto">
-                    <p className="text-[#A1A1AA] text-xs uppercase tracking-widest font-mono">© 2026 Retro Gala Network. All Systems Operational.</p>
+                    <p className="text-[#A1A1AA] text-xs uppercase tracking-widest font-mono">© 2026 Loferyx. All Systems Operational.</p>
                 </footer>
             </main>
         </div>

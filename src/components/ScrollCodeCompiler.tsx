@@ -66,7 +66,7 @@ export const ScrollCodeCompiler: React.FC = () => {
                     <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
                     <div className="w-3 h-3 rounded-full bg-[#61BB46]/80"></div>
                 </div>
-                <div className="font-code-md text-[12px] text-on-surface-variant">main.js - Retro Compiler</div>
+                <div className="font-code-md text-[12px] text-on-surface-variant">main.js - Loferyx Compiler</div>
                 <div className="flex gap-2">
                     <button className="bg-[#E03A3E] text-white px-4 py-1 rounded text-[12px] font-medium flex items-center gap-1 hover:bg-[#E03A3E]/90 transition-colors">
                         <span className="material-symbols-outlined text-[14px]">play_arrow</span> Run

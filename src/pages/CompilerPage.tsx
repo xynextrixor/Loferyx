@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import html2canvas from 'html2canvas';
-import { Link, useSearchParams, useLocation } from 'react-router-dom';
+import { Link, useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Plus, Minus, GripVertical, GripHorizontal, Wand2 } from 'lucide-react';
+import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Plus, Minus, GripVertical, GripHorizontal, Wand2, ClipboardPaste } from 'lucide-react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 import { useWindowSize } from '../hooks/useWindowSize';
 
@@ -32,6 +32,7 @@ export const CompilerPage: React.FC = () => {
   const isDesktop = width >= 1024;
   const [searchParams] = useSearchParams();
   const location = useLocation();
+  const navigate = useNavigate();
   let initialLang = searchParams.get('lang') || 'javascript';
   if (!['python', 'javascript', 'java', 'cpp', 'csharp'].includes(initialLang)) {
     initialLang = 'javascript';
@@ -46,7 +47,22 @@ export const CompilerPage: React.FC = () => {
   const [language, setLanguage] = useState(initialLang);
   
   const initialCodeFromState = location.state?.initialCode;
-  const [code, setCode] = useState(initialCodeFromState || DEFAULT_CODE[initialLang]);
+  const [code, setCode] = useState(() => {
+    try {
+      const tempSnippet = sessionStorage.getItem('temp_snippet_code');
+      if (tempSnippet) {
+        sessionStorage.removeItem('temp_snippet_code');
+        return tempSnippet;
+      }
+    } catch {}
+    
+    if (initialCodeFromState) return initialCodeFromState;
+    try {
+      const cached = localStorage.getItem(`compiler_snippet_${initialLang}`);
+      if (cached) return cached;
+    } catch {}
+    return DEFAULT_CODE[initialLang] || '';
+  });
   const [output, setOutput] = useState('');
   const [errorObj, setErrorObj] = useState('');
   const [executionTime, setExecutionTime] = useState<number | null>(null);
@@ -97,7 +113,6 @@ export const CompilerPage: React.FC = () => {
       lang = 'javascript';
     }
     setLanguage(lang);
-    setCode(DEFAULT_CODE[lang]);
   }, [searchParams]);
 
   useEffect(() => {
@@ -106,7 +121,14 @@ export const CompilerPage: React.FC = () => {
     }
   }, [chatHistory, isChatting]);
 
+  const prevLanguageRef = useRef(language);
+
   useEffect(() => {
+    if (prevLanguageRef.current === language) {
+       return; // Hasn't changed, this is a mount (or strict mode remount), skip it!
+    }
+    prevLanguageRef.current = language;
+
     try {
       const cached = localStorage.getItem(`compiler_snippet_${language}`);
       if (cached) {
@@ -115,7 +137,7 @@ export const CompilerPage: React.FC = () => {
         setCode(DEFAULT_CODE[language] || '');
       }
     } catch(e) {
-        setCode(DEFAULT_CODE[language] || '');
+      setCode(DEFAULT_CODE[language] || '');
     }
   }, [language]);
 
@@ -640,6 +662,34 @@ export const CompilerPage: React.FC = () => {
                 <Wand2 size={10} /> FORMAT
               </button>
               <button 
+                onClick={async () => {
+                  try {
+                    const text = await navigator.clipboard.readText();
+                    if (editorInstance) {
+                      const selection = editorInstance.getSelection();
+                      if (selection) {
+                        editorInstance.executeEdits('paste', [{
+                          range: selection,
+                          text: text,
+                          forceMoveMarkers: true
+                        }]);
+                        setCode(editorInstance.getValue());
+                      } else {
+                        setCode(text);
+                      }
+                    } else {
+                      setCode(text);
+                    }
+                  } catch (err) {
+                    console.error('Failed to read clipboard contents: ', err);
+                  }
+                }}
+                className="hover:text-white flex items-center gap-1 border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 px-2 py-0.5 rounded transition-colors"
+                title="Paste code from clipboard"
+              >
+                <ClipboardPaste size={10} /> PASTE
+              </button>
+              <button 
                 onClick={() => {
                   navigator.clipboard.writeText(code);
                   setIsCopied(true);
@@ -760,6 +810,34 @@ export const CompilerPage: React.FC = () => {
                     title="Format Code"
                   >
                     <Wand2 size={10} /> FORMAT
+                  </button>
+                  <button 
+                    onClick={async () => {
+                      try {
+                        const text = await navigator.clipboard.readText();
+                        if (editorInstance) {
+                          const selection = editorInstance.getSelection();
+                          if (selection) {
+                            editorInstance.executeEdits('paste', [{
+                              range: selection,
+                              text: text,
+                              forceMoveMarkers: true
+                            }]);
+                            setCode(editorInstance.getValue());
+                          } else {
+                            setCode(text);
+                          }
+                        } else {
+                          setCode(text);
+                        }
+                      } catch (err) {
+                        console.error('Failed to read clipboard contents: ', err);
+                      }
+                    }}
+                    className="hover:text-white flex items-center gap-1 border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 px-2 py-0.5 rounded transition-colors"
+                    title="Paste code from clipboard"
+                  >
+                    <ClipboardPaste size={10} /> PASTE
                   </button>
                   <button 
                     onClick={() => {
@@ -918,7 +996,7 @@ export const CompilerPage: React.FC = () => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-red-500 animate-ping' : 'bg-green-500'}`} />
-            <span>RETRO_TERMINAL_ONLINE_2026</span>
+            <span>LOFERYX_TERMINAL_ONLINE_2026</span>
           </div>
           <span className="hidden sm:inline border-l border-zinc-800 pl-3">CALLBACK_SYNC='run-code-sync'</span>
         </div>
