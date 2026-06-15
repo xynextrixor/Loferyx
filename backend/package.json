@@ -1,0 +1,14 @@
+{
+  "name": "yjs-signaling-server",
+  "version": "1.0.0",
+  "description": "Minimal y-websocket signaling server for real-time collaboration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.16.0",
+    "y-websocket": "^2.0.0",
+    "yjs": "^13.6.14"
+  }
+}
