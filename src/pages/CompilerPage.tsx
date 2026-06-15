@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import html2canvas from 'html2canvas';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Plus, Minus } from 'lucide-react';
+import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Plus, Minus, GripVertical, GripHorizontal } from 'lucide-react';
+import { Group, Panel, Separator } from 'react-resizable-panels';
+import { useWindowSize } from '../hooks/useWindowSize';
 
 interface ChatMessage {
   role: 'user' | 'model';
@@ -26,6 +28,8 @@ const DEFAULT_CODE: Record<string, string> = {
 };
 
 export const CompilerPage: React.FC = () => {
+  const { width } = useWindowSize();
+  const isDesktop = width >= 1024;
   const [searchParams] = useSearchParams();
   const location = useLocation();
   let initialLang = searchParams.get('lang') || 'javascript';
@@ -551,10 +555,14 @@ export const CompilerPage: React.FC = () => {
       </header>
 
       {/* Main Grid: Workspace Editor and Output Console */}
-      <main className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden relative w-full bg-zinc-950 p-4 lg:p-6 gap-4 lg:gap-6" id="compiler-main-canvas">
-        
+      <main className="flex-1 flex overflow-hidden relative w-full bg-zinc-950 p-4 lg:p-6" id="compiler-main-canvas">
+        <Group 
+          orientation={isDesktop ? "horizontal" : "vertical"} 
+          className="flex-1 w-full h-full gap-2 lg:gap-4"
+        >
         {/* Editor Workspace Block */}
-        <section className="flex flex-col justify-stretch h-[300px] lg:h-[400px] lg:flex-1 shrink-0 min-h-0 w-full" id="gala-editor-container">
+        <Panel id="editor-panel" order={1} defaultSize={isDesktop ? 65 : 55} minSize={20} className="flex flex-col lg:h-full">
+        <section className="flex flex-col justify-stretch h-full shrink-0 min-h-0 w-full" id="gala-editor-container">
           
           {/* AI Prompt Bar */}
           <div className="flex items-center gap-2 px-3 py-2 border border-zinc-800 rounded-lg bg-zinc-900 mb-2 shrink-0">
@@ -642,9 +650,17 @@ export const CompilerPage: React.FC = () => {
             </div>
           </div>
         </section>
+        </Panel>
+
+        <Separator className={`flex items-center justify-center shrink-0 w-2 h-2 lg:w-4 lg:h-4 z-10 transition-colors ${isDesktop ? 'hover:bg-zinc-800 lg:cursor-col-resize flex-col h-full items-center my-auto px-2' : 'hover:bg-zinc-800 cursor-row-resize w-full items-center mx-auto py-2'}`}>
+          <div className="bg-zinc-800 rounded px-0.5 py-1 text-gray-500">
+             {isDesktop ? <GripVertical size={12} /> : <GripHorizontal size={12} />}
+          </div>
+        </Separator>
 
         {/* Console / Output Area Panel */}
-        <section className="w-full lg:w-[420px] xl:w-[480px] shrink-0 flex flex-col justify-stretch h-[300px] lg:h-auto min-h-[300px] lg:min-h-0" id="gala-console-container">
+        <Panel id="console-panel" order={2} defaultSize={isDesktop ? 35 : 45} minSize={20} className="flex flex-col lg:h-full">
+        <section className="w-full shrink-0 flex flex-col justify-stretch h-full min-h-0 relative" id="gala-console-container">
           <OutputPanel 
             output={output} 
             error={errorObj} 
@@ -653,6 +669,8 @@ export const CompilerPage: React.FC = () => {
             status={status} 
           />
         </section>
+        </Panel>
+        </Group>
 
         {/* Chat / Explain sliding side panel using Framer Motion */}
         <AnimatePresence>
