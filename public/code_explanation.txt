@@ -1,0 +1,86 @@
+LOFERYX Codebase Architecture & Documentation
+===========================================
+This document provides a highly detailed explanation of every file, its components, functions, and the overall system path workflow.
+
+---------------------------------------------------
+1. CORE ENTRY & ROUTING
+---------------------------------------------------
+
+src/main.tsx
+- Description: The foundational bootstrap file for the React application. 
+- It uses React 18's createRoot to attach the React tree to the HTML element with id="root".
+- It pulls in the main App.tsx component and wraps it.
+
+src/App.tsx
+- Description: Root level component that defines the routing topology.
+- It uses HashRouter (or BrowserRouter) to configure paths:
+  - "/" -> Renders <LandingPage />, the initial entry page demonstrating the features and visual aesthetic.
+  - "/compiler" -> Renders <CompilerPage />, the main workspace for writing, generating, and running code.
+  - "/snippets" -> Renders <SnippetsPage />, dedicated to viewing saved code pieces.
+- Includes an <ErrorBoundary> class.
+  - getDerivedStateFromError: intercepts faults.
+  - componentDidCatch: logs rendering faults so the whole screen doesn't just go white silently. This ensures stable user feedback upon component failure.
+
+src/types.ts
+- Description: The central TypeScript definition file shared globally to ensure structural integrity across the app.
+- Defines Language (id, name) and CompileResponse schemas for the backend /api/compile integration.
+
+---------------------------------------------------
+2. PAGES (MAIN SCREENS)
+---------------------------------------------------
+
+src/pages/CompilerPage.tsx
+- Description: The heaviest component of the app. It holds the state for the code editor, AI interactions, compiler execution, and collaboration layer.
+- States:
+  - language & code: Track what the user is typing and its format.
+  - output & errorObj & status: Handle compilation results dynamically.
+  - aiPrompt & chatHistory: Power the AI generation and debugging side-drawer.
+  - sessionId: Connects into the useCollaboration hook for WebRTC/WebSockets multi-user sync.
+- Functions:
+  - handleCreateSession() / handleJoinSession() / handleLeaveSession(): Generate or ingest an arbitrary string "Room ID" which configures the Yjs real-time document protocol.
+  - handleLanguageChange(newLang): Updates language and loads templates or locally cached saved code via localStorage so the user doesn't lose progress.
+  - handleRunCode(): Makes an HTTP POST to '/api/compile'. Broadcats a local sync trigger so if other users are in the same room, their clients also evaluate the execution request.
+  - handleGenerateCode() / handleChatSubmit(): Send the context window and 'aiPrompt' or 'chatInput' to /api/generate or /api/chat. Uses REGEX formatting to extract markdown codeblocks dynamically into the code state variable.
+  - handleSave() / handleLoad(): Interact with localStorage scoped to the current active language (e.g., compiler_snippet_python).
+  - handleDownload(): Blobs the editor string and prompts the browser to download a physical file (.py, .ts, etc.).
+
+src/pages/LandingPage.tsx
+- Description: Serves as the marketing/entry layer. Connects users to the application context.
+
+---------------------------------------------------
+3. CUSTOM HOOKS (UTILITIES & LOGIC)
+---------------------------------------------------
+
+src/hooks/useCollaboration.ts
+- Description: Uses Yjs (a CRDT conceptual data store) alongside y-webrtc or y-websocket. 
+- Concept: It ensures optimistic conflict-free replicated data types between multiple browsers for the "Multiplayer IDE" feature. It exposes the ydoc (data) and provider (network layer) out to the front-end to be attached to the Monaco Editor.
+
+src/hooks/useWindowSize.ts
+- Description: Listens to the browser window 'resize' event, throttling limits, and returning the width/height to power conditional rendering (e.g. Mobile layouts vs Desktop generic horizontal/vertical pane sliding).
+
+---------------------------------------------------
+4. COMPONENTS (MODULAR UI ELEMENTS)
+---------------------------------------------------
+
+src/components/Editor.tsx
+- Description: Responsible for rendering the actual Monaco Editor (the same underlying text-engine as VSCode). 
+- Takes in the Yjs binding tools to sync text keystrokes transparently if the user is in a collaboration room.
+
+src/components/OutputPanel.tsx
+- Description: Renders the standard output terminal. 
+- It assesses the 'status' prop ('loading', 'error', 'success') to color code the execution block. Specifically handles visual text-formatting for standard error traces.
+
+src/components/LanguageSelector.tsx
+- Description: A stylized dropdown overlay that swaps out the text highlighting lexer and compilation targets.
+
+---------------------------------------------------
+5. OVERALL ARCHITECTURE PATH
+---------------------------------------------------
+1. A user enters `https://loferyx.onrender.com/` which serves the HTML and loads main.tsx.
+2. The user navigates to `/compiler`. App.tsx mounts CompilerPage.tsx.
+3. CompilerPage establishes state, mounts Editor.tsx (Monaco Editor UI), and OutputPanel.tsx.
+4. When the user types, code state is updated.
+5. If the user hits "RUN CODE", `handleRunCode()` fires, sending an async Axios POST request to `/api/compile` containing the code payload.
+6. The backend evaluates in a sandbox container, responding with JSON. 
+7. The CompilerPage parses the JSON and throws it down into the OutputPanel to render.
+8. If the user uses the AI Chat Prompt, `handleGenerateCode()` routes to `/api/generate`, directly mutating the text box to stream AI completions.
