@@ -4,23 +4,73 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="Wc35qtp9tFriQJg1zBqDY9L7gVEHvT120h6gQfLVRYw" />
-    <meta name="description" content="Discover Loferyx, the online platform built for your needs. Explore features and more." />
-    <meta name="keywords" content="Loferyx, web app, platform" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <title>Loferyx</title>
+    <meta name="description" content="Compile Python, JavaScript, Java, C++, and C# instantly. Retro Machines Gala is a free online code compiler with real-time collaboration and an AI code assistant." />
+    <meta name="keywords" content="online compiler, free code compiler, python online editor, collaborative code editor, java online compiler, c++ compiler, AI code assistant" />
+    <meta property="og:title" content="Retro Machines Gala - Free Online Code Compiler & Collaborative Editor" />
+    <meta property="og:description" content="Compile Python, JavaScript, Java, C++, and C# instantly. Features real-time collaboration and an AI code assistant." />
+    <meta property="og:url" content="https://loferyx.onrender.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://loferyx.onrender.com/logo.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Retro Machines Gala - Online Code Compiler" />
+    <meta name="twitter:description" content="Free collaborative online code editor supporting Python, Java, C++, JS, and C#." />
+    <meta name="twitter:image" content="https://loferyx.onrender.com/logo.svg" />
+    <link rel="canonical" href="https://loferyx.onrender.com/" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/logo.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.svg" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.svg" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Retro Machines Gala - Online Code Compiler</title>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Retro Machines Gala",
+      "url": "https://loferyx.onrender.com",
+      "description": "Free online code compiler with real-time collaboration and an AI coding assistant. Supports Python, JS, Java, C++, and C#.",
+      "applicationCategory": "DeveloperApplication",
+      "genre": "Code Editor",
+      "operatingSystem": "WebBrowser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script>
+      let isFetchingHealth = false;
       window.onerror = function(message, source, lineno, colno, error) {
-        fetch('/health?err=' + encodeURIComponent(message + ' | ' + (error ? error.stack : '')));
+        if (isFetchingHealth) return;
+        isFetchingHealth = true;
+        fetch('/health?err=' + encodeURIComponent(message + ' | ' + (error ? error.stack : '')))
+          .catch(() => {})
+          .finally(() => isFetchingHealth = false);
       };
       window.addEventListener('unhandledrejection', function(event) {
-        fetch('/health?err=' + encodeURIComponent('Unhandled Rejection: ' + event.reason));
+        let reasonStr = String(event.reason);
+        if (reasonStr.includes('Failed to fetch')) return; // Ignore standard network errors to prevent loops
+        if (isFetchingHealth) return;
+        isFetchingHealth = true;
+        fetch('/health?err=' + encodeURIComponent('Unhandled Rejection: ' + reasonStr))
+          .catch(() => {})
+          .finally(() => isFetchingHealth = false);
       });
       const originalConsoleError = console.error;
       console.error = function(...args) {
-        fetch('/health?err=' + encodeURIComponent('Console Error: ' + args.join(' ')));
+        let errStr = args.join(' ');
+        if (errStr.includes('Failed to fetch') || errStr.includes('failed to connect to websocket')) {
+           return originalConsoleError.apply(console, args);
+        }
+        if (isFetchingHealth) return originalConsoleError.apply(console, args);
+        isFetchingHealth = true;
+        fetch('/health?err=' + encodeURIComponent('Console Error: ' + errStr))
+          .catch(() => {})
+          .finally(() => isFetchingHealth = false);
         originalConsoleError.apply(console, args);
       }
     </script>

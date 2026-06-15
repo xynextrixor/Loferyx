@@ -1,0 +1,14 @@
+{
+  "name": "Retro Machines Gala",
+  "short_name": "Retro Machines",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#111827",
+  "background_color": "#111827",
+  "display": "standalone"
+}

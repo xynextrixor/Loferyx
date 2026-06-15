@@ -3,6 +3,7 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { LandingPage } from './pages/LandingPage';
 import { CompilerPage } from './pages/CompilerPage';
 import { SnippetsPage } from './pages/SnippetsPage';
+import { DynamicFavicon } from './components/DynamicFavicon';
 
 interface ErrorBoundaryProps { children: ReactNode; }
 interface ErrorBoundaryState { hasError: boolean; error: Error | null; }
@@ -42,6 +43,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 export default function App() {
   return (
     <ErrorBoundary>
+      <DynamicFavicon />
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
