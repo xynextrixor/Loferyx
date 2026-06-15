@@ -94,8 +94,8 @@ export const CompilerPage: React.FC = () => {
 
   const handleCreateSession = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const genSeg = () => Array.from({length:3}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-    const id = `${genSeg()}-${genSeg()}-${genSeg()}`;
+    const genSeg = () => Array.from({length:4}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    const id = genSeg();
     setSessionId(id);
   };
 
