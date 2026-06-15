@@ -64,7 +64,7 @@ export const CompilerPage: React.FC = () => {
   // Collaboration State
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [editorInstance, setEditorInstance] = useState<any>(null);
-  const { collaboratorsCount } = useCollaboration(sessionId, editorInstance);
+  const { collaboratorsCount, provider, ydoc } = useCollaboration(sessionId, editorInstance);
 
   const handleCreateSession = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -112,8 +112,72 @@ export const CompilerPage: React.FC = () => {
     }
   }, [language]);
 
+  // Sync collaborative language
+  useEffect(() => {
+    if (!ydoc || !provider) return;
+    const metaMap = ydoc.getMap('meta');
+    
+    const initLanguage = () => {
+      // Set initial if room was just created
+      if (!metaMap.has('language') && provider.awareness.getStates().size <= 1) {
+        metaMap.set('language', language);
+      }
+    };
+
+    if (provider.synced) {
+      initLanguage();
+    } else {
+      provider.once('sync', initLanguage);
+    }
+    
+    const handleMetaChange = () => {
+      const sharedLang = metaMap.get('language') as string;
+      if (sharedLang && sharedLang !== language) {
+        setLanguage(sharedLang);
+      }
+    };
+    
+    metaMap.observe(handleMetaChange);
+    handleMetaChange();
+
+    return () => {
+      metaMap.unobserve(handleMetaChange);
+    };
+  }, [ydoc, provider]); // Removing 'language' so it doesn't try to reset the metaMap every time the local language changes
+
+  // Sync run code execution
+  const lastRunRef = useRef<number | null>(null);
+  
+  useEffect(() => {
+    if (!provider) return;
+
+    const handleAwarenessChange = () => {
+      const states = provider.awareness.getStates();
+      states.forEach((state: any, clientId: number) => {
+        if (clientId !== provider.awareness.clientID && state.runTrigger && state.runTrigger !== lastRunRef.current) {
+          lastRunRef.current = state.runTrigger;
+          document.dispatchEvent(new CustomEvent('remote-run-code'));
+        }
+      });
+    };
+
+    provider.awareness.on('change', handleAwarenessChange);
+    return () => provider.awareness.off('change', handleAwarenessChange);
+  }, [provider]);
+
+  useEffect(() => {
+    const handleRemoteRun = () => {
+      handleRunCode(false); // Call without broadcasting
+    };
+    document.addEventListener('remote-run-code', handleRemoteRun as EventListener);
+    return () => document.removeEventListener('remote-run-code', handleRemoteRun as EventListener);
+  }, [code, language]);
+
   const handleLanguageChange = (newLang: string) => {
     setLanguage(newLang);
+    if (ydoc) {
+      ydoc.getMap('meta').set('language', newLang);
+    }
     try {
       const cached = localStorage.getItem(`compiler_snippet_${newLang}`);
       if (cached) {
@@ -126,8 +190,14 @@ export const CompilerPage: React.FC = () => {
     }
   };
 
-  const handleRunCode = async () => {
+  const handleRunCode = async (broadcast = true) => {
     if (isLoading) return;
+    
+    if (broadcast && provider) {
+      const triggerId = Date.now();
+      lastRunRef.current = triggerId;
+      provider.awareness.setLocalStateField('runTrigger', triggerId);
+    }
     
     setIsLoading(true);
     setStatus('loading');

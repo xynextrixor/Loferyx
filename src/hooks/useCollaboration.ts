@@ -5,8 +5,8 @@ export function useCollaboration(
   editorInstance: any
 ) {
   const [collaboratorsCount, setCollaboratorsCount] = useState(1);
-  const providerRef = useRef<any>(null);
-  const bindingRef = useRef<any>(null);
+  const [providerInstance, setProviderInstance] = useState<any>(null);
+  const [ydocInstance, setYdocInstance] = useState<any>(null);
 
   useEffect(() => {
     if (!sessionId || !editorInstance) return;
@@ -29,9 +29,19 @@ export function useCollaboration(
 
         ydoc = new Y.Doc();
         provider = new WebsocketProvider(wsUrl, sessionId!, ydoc);
-        providerRef.current = provider;
+
+        if (isMounted) {
+          setYdocInstance(ydoc);
+          setProviderInstance(provider);
+        }
 
         const type = ydoc.getText('monaco');
+
+        provider.on('sync', (isSynced: boolean) => {
+          if (isSynced && type.length === 0 && provider.awareness.getStates().size <= 1) {
+            type.insert(0, editorInstance.getValue());
+          }
+        });
 
         binding = new MonacoBinding(
           type,
@@ -39,7 +49,6 @@ export function useCollaboration(
           new Set([editorInstance]),
           provider.awareness
         );
-        bindingRef.current = binding;
 
         provider.awareness.on('change', () => {
           if (isMounted) {
@@ -55,17 +64,13 @@ export function useCollaboration(
 
     return () => {
       isMounted = false;
-      if (bindingRef.current) {
-        bindingRef.current.destroy();
-      }
-      if (providerRef.current) {
-        providerRef.current.disconnect();
-      }
-      if (ydoc) {
-        ydoc.destroy();
-      }
+      if (binding) binding.destroy();
+      if (provider) provider.disconnect();
+      if (ydoc) ydoc.destroy();
+      setYdocInstance(null);
+      setProviderInstance(null);
     };
   }, [sessionId, editorInstance]);
 
-  return { collaboratorsCount };
+  return { collaboratorsCount, provider: providerInstance, ydoc: ydocInstance };
 }
