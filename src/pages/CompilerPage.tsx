@@ -555,13 +555,14 @@ export const CompilerPage: React.FC = () => {
       </header>
 
       {/* Main Grid: Workspace Editor and Output Console */}
-      <main className="flex-1 flex overflow-hidden min-h-0 relative w-full bg-zinc-950 p-4 lg:p-6" id="compiler-main-canvas">
+      <main className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden min-h-0 relative w-full bg-zinc-950 p-4 lg:p-6" id="compiler-main-canvas">
+        {isDesktop ? (
         <Group 
-          orientation={isDesktop ? "horizontal" : "vertical"} 
-          className="flex-1 w-full h-full gap-2 lg:gap-4"
+          orientation="horizontal" 
+          className="flex-1 w-full h-full"
         >
         {/* Editor Workspace Block */}
-        <Panel id="editor-panel" order={1} defaultSize={isDesktop ? 65 : 55} minSize={20} className="flex flex-col h-full">
+        <Panel id="editor-panel" order={1} defaultSize={65} minSize={20} className="flex flex-col">
         <section className="flex flex-col justify-stretch h-full min-h-0 w-full" id="gala-editor-container">
           
           {/* AI Prompt Bar */}
@@ -652,14 +653,14 @@ export const CompilerPage: React.FC = () => {
         </section>
         </Panel>
 
-        <Separator className={`flex items-center justify-center shrink-0 z-10 transition-colors ${isDesktop ? 'w-2 lg:w-4 h-full hover:bg-zinc-800 lg:cursor-col-resize flex-col items-center my-auto px-2' : 'h-8 lg:h-4 w-full hover:bg-zinc-800 cursor-row-resize mx-auto py-2 cursor-ns-resize'}`}>
+        <Separator className="flex items-center justify-center shrink-0 z-10 transition-colors w-2 lg:w-4 h-full hover:bg-zinc-800 lg:cursor-col-resize flex-col items-center my-auto px-2">
           <div className="bg-zinc-800 rounded px-1 py-1 lg:px-0.5 lg:py-4 text-gray-500">
-             {isDesktop ? <GripVertical size={12} /> : <GripHorizontal size={16} />}
+             <GripVertical size={12} />
           </div>
         </Separator>
 
         {/* Console / Output Area Panel */}
-        <Panel id="console-panel" order={2} defaultSize={isDesktop ? 35 : 45} minSize={20} className="flex flex-col h-full">
+        <Panel id="console-panel" order={2} defaultSize={35} minSize={20} className="flex flex-col">
         <section className="w-full flex flex-col justify-stretch h-full min-h-0 relative" id="gala-console-container">
           <OutputPanel 
             output={output} 
@@ -671,6 +672,113 @@ export const CompilerPage: React.FC = () => {
         </section>
         </Panel>
         </Group>
+        ) : (
+          <div className="flex flex-col w-full min-h-max pb-[80px] gap-6">
+            <section className="flex flex-col w-full h-[450px]" id="gala-editor-container-mobile">
+              
+              {/* AI Prompt Bar */}
+              <div className="flex items-center gap-2 px-3 py-2 border border-zinc-800 rounded-lg bg-zinc-900 mb-2 shrink-0">
+                <Sparkles size={14} className={isGeneratingCode ? "text-purple-500 animate-pulse" : "text-gray-400"} />
+                <input 
+                  type="text" 
+                  placeholder="Ask AI to write code for you..." 
+                  className="bg-transparent border-none outline-none flex-1 font-mono text-xs text-white placeholder-zinc-800 min-w-0"
+                  value={aiPrompt}
+                  onChange={e => setAiPrompt(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleGenerateCode();
+                    }
+                  }}
+                  disabled={isGeneratingCode || isLoading}
+                />
+                {aiPrompt && (
+                  <button 
+                    onClick={() => setAiPrompt('')}
+                    className="text-gray-400 hover:text-white p-1"
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+                <button
+                  onClick={handleGenerateCode}
+                  disabled={isGeneratingCode || isLoading || !aiPrompt.trim()}
+                  className="text-[10px] font-mono uppercase bg-zinc-800 hover:bg-purple-500 text-gray-400 hover:text-white px-2.5 py-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed hidden sm:block"
+                >
+                  {isGeneratingCode ? "GENERATING..." : "GENERATE"}
+                </button>
+              </div>
+
+              {/* Editor Header panel */}
+              <div className="flex items-center justify-between px-4 py-2 border-t border-x border-zinc-800 rounded-t-lg bg-zinc-900 text-[10px] font-mono shrink-0 select-none text-gray-400">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2 h-2 rounded-full bg-green-500" />
+                  <span className="font-bold text-white uppercase tracking-wider">main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : 'cs'}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 border border-zinc-800 rounded bg-zinc-950 p-[2px]">
+                    <button 
+                      onClick={() => setFontSize(Math.max(8, fontSize - 1))}
+                      className="hover:bg-zinc-800 p-0.5 rounded text-gray-400 hover:text-white"
+                      title="Decrease Font Size"
+                    >
+                      <Minus size={10} />
+                    </button>
+                    <span className="px-1 text-white">{fontSize}px</span>
+                    <button 
+                      onClick={() => setFontSize(Math.min(32, fontSize + 1))}
+                      className="hover:bg-zinc-800 p-0.5 rounded text-gray-400 hover:text-white"
+                      title="Increase Font Size"
+                    >
+                      <Plus size={10} />
+                    </button>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(code);
+                      setIsCopied(true);
+                      setTimeout(() => setIsCopied(false), 2000);
+                    }}
+                    className="hover:text-white flex items-center gap-1 border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 px-2 py-0.5 rounded transition-colors"
+                    title="Copy code to clipboard"
+                  >
+                    <Copy size={10} /> {isCopied ? 'COPIED!' : 'COPY'}
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 min-h-0 relative">
+                <div className="absolute inset-0">
+                  <Editor 
+                    code={sessionId ? undefined : code} 
+                    onChange={setCode} 
+                    language={language} 
+                    disabled={isLoading} 
+                    fontSize={fontSize}
+                    onMount={(editor) => setEditorInstance(editor)}
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Custom Vertical Divider */}
+            <div className="w-full flex items-center justify-center gap-3 text-zinc-600 font-mono text-[10px] uppercase tracking-widest my-2">
+               <div className="h-px bg-zinc-800 flex-1" />
+               <span>Terminal Console</span>
+               <div className="h-px bg-zinc-800 flex-1" />
+            </div>
+
+            <section className="w-full flex flex-col justify-stretch h-[350px] shrink-0" id="gala-console-container-mobile">
+              <OutputPanel 
+                output={output} 
+                error={errorObj} 
+                executionTime={executionTime} 
+                isLoading={isLoading} 
+                status={status} 
+              />
+            </section>
+          </div>
+        )}
 
         {/* Chat / Explain sliding side panel using Framer Motion */}
         <AnimatePresence>

@@ -61,7 +61,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
       </div>
 
       {/* Output Console Body */}
-      <div className="flex-1 p-5 font-mono text-xs overflow-auto bg-zinc-900 min-h-0 flex flex-col justify-between">
+      <div className="flex-1 p-5 font-mono text-xs overflow-auto custom-scrollbar bg-zinc-900 min-h-0 flex flex-col justify-between">
         <div className="space-y-4">
           {isLoading && (
             <div className="space-y-2 text-gray-400">
