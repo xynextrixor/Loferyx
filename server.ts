@@ -222,7 +222,7 @@ Request: ${prompt}`
       return;
     }
 
-    const apiKey = process.env.COMPILER_API_KEY;
+    const apiKey = process.env.COMPILER_API_KEY || 'MY_COMPILER_API_KEY';
     if (!apiKey) {
       console.error('COMPILER_API_KEY is missing from environment variables.');
       res.status(500).json({ error: 'Server misconfiguration.' });
