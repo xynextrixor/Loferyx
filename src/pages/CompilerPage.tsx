@@ -473,8 +473,9 @@ export const CompilerPage: React.FC = () => {
           <Link to="/" className="text-gray-600 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white transition-colors p-1 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800" id="nav-back-button">
             <ArrowLeft size={16} />
           </Link>
-          <Link to="/" className="flex items-center h-10">
+          <Link to="/" className="flex items-center h-10 gap-2">
             <img src="/logo.svg" alt="LOFERYX" className="h-full object-contain" />
+            <span className="font-sans text-sm font-bold text-zinc-900 dark:text-white tracking-tight">Loferyx Compiler</span>
           </Link>
           <button onClick={toggleTheme} className="text-gray-600 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white transition-colors p-1.5 rounded bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 ml-2" title="Toggle Theme">
             {isDark ? <Sun size={14} /> : <Moon size={14} />}

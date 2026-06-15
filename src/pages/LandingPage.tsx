@@ -11,8 +11,9 @@ export const LandingPage: React.FC = () => {
             {/* TopNavBar */}
             <nav className="fixed top-0 w-full z-50 bg-zinc-100/70 dark:bg-surface/70 backdrop-blur-md border-b border-black/10 dark:border-white/10">
                 <div className="flex justify-between items-center px-4 md:px-margin-desktop py-unit-md max-w-container-max mx-auto">
-                    <Link to="/" className="h-10 flex items-center">
+                    <Link to="/" className="h-10 flex items-center gap-3">
                         <img src="/logo.svg" alt="LOFERYX" className="h-full object-contain" />
+                        <span className="font-display-md text-xl font-bold text-zinc-900 dark:text-white tracking-tight">Loferyx Compiler</span>
                     </Link>
                     <div className="hidden md:flex items-center gap-8">
                         <Link to="/snippets" className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer">Snippets</Link>
