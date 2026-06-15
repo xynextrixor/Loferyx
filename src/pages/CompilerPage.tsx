@@ -429,7 +429,7 @@ export const CompilerPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col justify-between overflow-hidden relative font-sans select-none" id="compiler-root">
+    <div className="h-[100dvh] bg-zinc-950 text-white flex flex-col justify-between overflow-hidden relative font-sans select-none" id="compiler-root">
       
       {/* Tiny top cyber accent header status */}
       <div className="h-1 bg-gradient-to-r from-red-500 via-zinc-800 to-green-500" />
@@ -500,32 +500,32 @@ export const CompilerPage: React.FC = () => {
           <div className="flex items-center gap-2 flex-wrap justify-end">
             {/* Collaboration controls */}
             {sessionId ? (
-              <div className="flex items-center gap-2 mr-2">
+              <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 rounded-lg border border-zinc-700">
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                   <span className="font-mono text-[10px] text-white">ID: {sessionId}</span>
-                  <span className="font-mono text-[10px] text-gray-400 ml-2">[{collaboratorsCount} online]</span>
+                  <span className="font-mono text-[10px] text-gray-400 ml-2 hidden sm:inline">[{collaboratorsCount} online]</span>
                 </div>
                 <button
                   onClick={handleLeaveSession}
                   className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 hover:border-red-500 rounded-lg font-mono text-[10px] uppercase tracking-widest transition-all"
                 >
-                  Leave Session
+                  Leave
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2 mr-2">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={handleCreateSession}
                   className="px-3 py-1.5 bg-[#61BB46]/10 hover:bg-[#61BB46]/20 text-[#61BB46] border border-[#61BB46]/30 hover:border-[#61BB46] rounded-lg font-mono text-[10px] uppercase tracking-widest transition-all"
                 >
-                  Send / Create Session
+                  <span className="hidden sm:inline">Send / </span>Create<span className="hidden sm:inline"> Session</span>
                 </button>
                 <button
                   onClick={handleJoinSession}
                   className="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border border-blue-500/30 hover:border-blue-500 rounded-lg font-mono text-[10px] uppercase tracking-widest transition-all"
                 >
-                  Receive / Join Session
+                  <span className="hidden sm:inline">Receive / </span>Join<span className="hidden sm:inline"> Session</span>
                 </button>
               </div>
             )}
@@ -555,14 +555,14 @@ export const CompilerPage: React.FC = () => {
       </header>
 
       {/* Main Grid: Workspace Editor and Output Console */}
-      <main className="flex-1 flex overflow-hidden relative w-full bg-zinc-950 p-4 lg:p-6" id="compiler-main-canvas">
+      <main className="flex-1 flex overflow-hidden min-h-0 relative w-full bg-zinc-950 p-4 lg:p-6" id="compiler-main-canvas">
         <Group 
           orientation={isDesktop ? "horizontal" : "vertical"} 
           className="flex-1 w-full h-full gap-2 lg:gap-4"
         >
         {/* Editor Workspace Block */}
-        <Panel id="editor-panel" order={1} defaultSize={isDesktop ? 65 : 55} minSize={20} className="flex flex-col lg:h-full">
-        <section className="flex flex-col justify-stretch h-full shrink-0 min-h-0 w-full" id="gala-editor-container">
+        <Panel id="editor-panel" order={1} defaultSize={isDesktop ? 65 : 55} minSize={20} className="flex flex-col h-full">
+        <section className="flex flex-col justify-stretch h-full min-h-0 w-full" id="gala-editor-container">
           
           {/* AI Prompt Bar */}
           <div className="flex items-center gap-2 px-3 py-2 border border-zinc-800 rounded-lg bg-zinc-900 mb-2 shrink-0">
@@ -652,15 +652,15 @@ export const CompilerPage: React.FC = () => {
         </section>
         </Panel>
 
-        <Separator className={`flex items-center justify-center shrink-0 w-2 h-2 lg:w-4 lg:h-4 z-10 transition-colors ${isDesktop ? 'hover:bg-zinc-800 lg:cursor-col-resize flex-col h-full items-center my-auto px-2' : 'hover:bg-zinc-800 cursor-row-resize w-full items-center mx-auto py-2'}`}>
-          <div className="bg-zinc-800 rounded px-0.5 py-1 text-gray-500">
-             {isDesktop ? <GripVertical size={12} /> : <GripHorizontal size={12} />}
+        <Separator className={`flex items-center justify-center shrink-0 z-10 transition-colors ${isDesktop ? 'w-2 lg:w-4 h-full hover:bg-zinc-800 lg:cursor-col-resize flex-col items-center my-auto px-2' : 'h-8 lg:h-4 w-full hover:bg-zinc-800 cursor-row-resize mx-auto py-2 cursor-ns-resize'}`}>
+          <div className="bg-zinc-800 rounded px-1 py-1 lg:px-0.5 lg:py-4 text-gray-500">
+             {isDesktop ? <GripVertical size={12} /> : <GripHorizontal size={16} />}
           </div>
         </Separator>
 
         {/* Console / Output Area Panel */}
-        <Panel id="console-panel" order={2} defaultSize={isDesktop ? 35 : 45} minSize={20} className="flex flex-col lg:h-full">
-        <section className="w-full shrink-0 flex flex-col justify-stretch h-full min-h-0 relative" id="gala-console-container">
+        <Panel id="console-panel" order={2} defaultSize={isDesktop ? 35 : 45} minSize={20} className="flex flex-col h-full">
+        <section className="w-full flex flex-col justify-stretch h-full min-h-0 relative" id="gala-console-container">
           <OutputPanel 
             output={output} 
             error={errorObj} 
