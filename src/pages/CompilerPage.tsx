@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import html2canvas from 'html2canvas';
+import * as htmlToImage from 'html-to-image';
 import { Link, useSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../hooks/useTheme';
@@ -346,10 +346,29 @@ export const CompilerPage: React.FC = () => {
     try {
       const element = document.getElementById('monaco-editor-wrapper');
       if (!element) return;
-      const canvas = await html2canvas(element);
-      const url = canvas.toDataURL('image/png');
+      
+      // Explicitly set font style to prevent "font is undefined" error
+      // if (element.style) element.style.font = '14px monospace';
+      
+      const dataUrl = await htmlToImage.toPng(element, {
+        cacheBust: true,
+        // Attempt to avoid parsing problematic cross-origin CSS and font definitions
+        skipFonts: true,
+        // Explicitly exclude stylesheet links that might cause cross-origin errors
+        filter: (node) => {
+          if (node.tagName === 'LINK' && node.getAttribute('rel') === 'stylesheet') {
+            return false;
+          }
+          return true;
+        },
+        style: {
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          backgroundColor: '#18181B'
+        }
+      });
       const a = document.createElement('a');
-      a.href = url;
+      a.href = dataUrl;
       a.download = 'compiler_snapshot.png';
       a.click();
     } catch (err) {
