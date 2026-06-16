@@ -1,4 +1,5 @@
 # Loferyx Compiler
+<img   src"https://github.com/xynextrixor/Loferyx/blob/main/public/character.png">
 
 <div align="center">
 
