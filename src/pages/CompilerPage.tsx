@@ -4,7 +4,7 @@ import html2canvas from 'html2canvas';
 import { Link, useSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../hooks/useTheme';
-import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Plus, Minus, GripVertical, GripHorizontal, Wand2, ClipboardPaste, Moon, Sun, Link2 } from 'lucide-react';
+import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Check, Plus, Minus, GripVertical, GripHorizontal, Wand2, ClipboardPaste, Moon, Sun, Link2 } from 'lucide-react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 import { useWindowSize } from '../hooks/useWindowSize';
 
@@ -110,6 +110,9 @@ export const CompilerPage: React.FC = () => {
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
   const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'loading'>('idle');
+  const [shareModalData, setShareModalData] = useState<{ id: string, url: string } | null>(null);
+  const [showLoadModal, setShowLoadModal] = useState(false);
+  const [loadIdInput, setLoadIdInput] = useState('');
 
   // Collaboration State
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -354,6 +357,24 @@ export const CompilerPage: React.FC = () => {
   };
 
   const [isSharing, setIsSharing] = useState(false);
+  const [isCopyingModal, setIsCopyingModal] = useState(false);
+  const handleModalCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setIsCopyingModal(true);
+      setTimeout(() => setIsCopyingModal(false), 2000);
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const handleLoadShare = () => {
+    if (!loadIdInput.trim()) return;
+    navigate(`/m/${loadIdInput.trim()}`);
+    setShowLoadModal(false);
+    setLoadIdInput('');
+  };
+
   const handleShareLink = async () => {
     if (isSharing) return;
     setIsSharing(true);
@@ -362,13 +383,18 @@ export const CompilerPage: React.FC = () => {
       const res = await axios.post('/api/share', { code: currentCode, language });
       if (res.data.id) {
         const url = `https://loferyx.onrender.com/m/${res.data.id}`;
-        await navigator.clipboard.writeText(url);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-        // Optional user feedback 
+        setShareModalData({ id: res.data.id, url });
+        try {
+          await navigator.clipboard.writeText(url);
+          setIsCopied(true);
+          setTimeout(() => setIsCopied(false), 2000);
+        } catch (e) {
+          setIsCopied(true);
+          setTimeout(() => setIsCopied(false), 2000);
+        }
       }
-    } catch (err) {
-      alert("Failed to create shareable link");
+    } catch (err: any) {
+      alert(`Failed to create shareable link: ${err?.response?.data?.error || err.message}`);
     } finally {
       setIsSharing(false);
     }
@@ -639,7 +665,15 @@ export const CompilerPage: React.FC = () => {
               id="compiler-share-btn"
             >
               <Link2 size={12} className="text-blue-500" />
-              <span>{isSharing ? 'SAVING...' : 'SHARE'}</span>
+              <span>{isSharing ? 'SAVING...' : isCopied ? 'COPIED!' : 'SHARE'}</span>
+            </button>
+            <button
+              onClick={() => setShowLoadModal(true)}
+              disabled={isLoading}
+              className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-500 text-gray-600 dark:text-gray-400 hover:text-white px-3.5 py-2 rounded-lg font-mono text-[10px] items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 flex"
+            >
+              <FolderOpen size={12} className="text-blue-500" />
+              <span>LOAD</span>
             </button>
 
             <button
@@ -1066,6 +1100,127 @@ export const CompilerPage: React.FC = () => {
           <span>DL</span>
         </button>
       </div>
+
+      {/* Share Modal */}
+      <AnimatePresence>
+        {shareModalData && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 10 }}
+              className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-2xl max-w-sm w-full"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-mono text-sm font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2 w-full flex items-center gap-2">
+                  <Link2 size={16} className="text-blue-500" /> SHARE SNIPPET
+                </h3>
+              </div>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4 font-mono">
+                Your snippet has been generated and saved. You can load it using the Snippet ID or share the URL.
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[10px] font-mono font-bold tracking-widest text-zinc-500 dark:text-zinc-400 block mb-1">SNIPPET ID / KEY</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      readOnly
+                      value={shareModalData.id}
+                      className="flex-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-lg font-mono text-xs text-center font-bold tracking-wider"
+                    />
+                    <button
+                      onClick={() => handleModalCopy(shareModalData.id)}
+                      className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 p-2 rounded-lg text-zinc-600 dark:text-zinc-400 transition-colors"
+                    >
+                      {isCopyingModal ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-mono font-bold tracking-widest text-zinc-500 dark:text-zinc-400 block mb-1">SHARE URL</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      readOnly
+                      value={shareModalData.url}
+                      className="flex-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-lg font-mono text-[10px] truncate"
+                    />
+                    <button
+                      onClick={() => handleModalCopy(shareModalData.url)}
+                      className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 p-2 rounded-lg text-zinc-600 dark:text-zinc-400 transition-colors"
+                    >
+                      {isCopyingModal ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShareModalData(null)}
+                className="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white p-2 text-xs font-mono font-bold tracking-widest uppercase transition-colors rounded-lg flex justify-center items-center gap-2"
+              >
+                CLOSE DOCKET
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {showLoadModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 10 }}
+              className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-2xl max-w-sm w-full"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-mono text-sm font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2 w-full flex items-center gap-2">
+                  <FolderOpen size={16} className="text-blue-500" /> LOAD SNIPPET
+                </h3>
+              </div>
+              
+              <div className="mb-4">
+                <label className="text-[10px] font-mono font-bold tracking-widest text-zinc-500 dark:text-zinc-400 block mb-1">SNIPPET ID / KEY</label>
+                <input
+                  value={loadIdInput}
+                  onChange={(e) => setLoadIdInput(e.target.value)}
+                  placeholder="e.g. jx3k"
+                  autoFocus
+                  onKeyDown={(e) => e.key === 'Enter' && handleLoadShare()}
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-lg font-mono text-sm uppercase text-center font-bold tracking-widest outline-none focus:border-blue-500 transition-colors"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowLoadModal(false)}
+                  className="flex-1 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 p-2 text-[10px] font-mono tracking-widest uppercase transition-colors rounded-lg flex justify-center items-center gap-2"
+                >
+                  CANCEL
+                </button>
+                <button
+                  onClick={handleLoadShare}
+                  disabled={!loadIdInput.trim()}
+                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white p-2 text-[10px] font-mono tracking-widest uppercase transition-colors rounded-lg flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  LOAD DATA
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Retro Status footer bar */}
       <footer className="h-8 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-between px-6 text-[10px] font-mono text-gray-600 dark:text-gray-400 shrink-0 select-none z-10">
