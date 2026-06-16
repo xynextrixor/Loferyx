@@ -16,7 +16,7 @@ export const LandingPage: React.FC = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const navClass = `fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md border-b ${isScrolled ? 'bg-red-600 border-red-700' : 'bg-zinc-100/70 dark:bg-surface/70 border-black/10 dark:border-white/10'}`;
+    const navClass = `fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md border-b ${isScrolled ? 'bg-[#00c950] border-[#00c950] shadow-[0_0_20px_rgba(0,201,80,0.6)]' : 'bg-zinc-100/70 dark:bg-surface/70 border-black/10 dark:border-white/10'}`;
     const textColor = isScrolled ? 'text-zinc-950' : 'text-zinc-600 dark:text-on-surface-variant';
     const linkColor = isScrolled ? 'text-zinc-950 hover:text-green-400 hover:scale-105' : 'text-zinc-600 dark:text-on-surface-variant hover:text-primary';
 
@@ -37,7 +37,7 @@ export const LandingPage: React.FC = () => {
                             {isDark ? <Sun size={18} /> : <Moon size={18} />}
                         </button>
                     </div>
-                    <Link to="/compiler" className={`${isScrolled ? 'bg-green-500 text-white' : 'bg-[#00c950] text-zinc-900 dark:text-white'} transition-all duration-200 ease-in-out px-6 py-2 rounded-md font-label-md hidden md:block hover:scale-105 hover:shadow-lg hover:shadow-green-500/20`}>
+                    <Link to="/compiler" className={`${isScrolled ? 'bg-red-500 text-white' : 'bg-[#00c950] text-zinc-900 dark:text-white'} transition-all duration-200 ease-in-out px-6 py-2 rounded-md font-label-md hidden md:block hover:scale-105 hover:shadow-lg hover:shadow-[#00c950]/20`}>
                         Launch Compiler
                     </Link>
                 </div>
@@ -56,7 +56,7 @@ export const LandingPage: React.FC = () => {
                             Experience the raw speed of a modern compiler with the aesthetic purity of classic machines. Write, test, and deploy Python, JavaScript, Java, C++, and C# in milliseconds.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-4">
-                            <Link to="/compiler" className="bg-[#00c950] text-zinc-900 dark:text-white transition-all duration-200 ease-in-out px-8 py-3 rounded-md font-body-md font-medium flex items-center gap-2 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20">
+                            <Link to="/compiler" className="bg-[#00c950] text-zinc-900 dark:text-white transition-all duration-200 ease-in-out px-8 py-3 rounded-md font-body-md font-medium flex items-center gap-2 hover:scale-105 hover:shadow-lg hover:shadow-[#00c950]/20">
                                 <span className="material-symbols-outlined text-[18px]">terminal</span>
                                 Launch Compiler
                             </Link>
