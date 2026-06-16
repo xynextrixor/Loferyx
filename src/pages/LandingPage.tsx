@@ -43,7 +43,7 @@ export const LandingPage: React.FC = () => {
                 </div>
             </nav>
             
-            <main className="flex-grow pt-24 pb-16">
+            <main className="flex-grow pt-16 pb-16">
                 {/* Hero Section */}
                 <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-unit-xl md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                      <div className="flex flex-col gap-8 z-10">

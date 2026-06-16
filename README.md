@@ -1,20 +1,47 @@
+# Loferyx Compiler
+
 <div align="center">
-<img width="500" height="475" alt="GHBanner" src="https://github.com/xynextrixor/Loferyx/blob/main/public/character.png" />
+
+### A Retro-Style Code Compiling Experience
+
+✨ **Fast. Precise. Aesthetic.** ✨
+
+[![Loferyx Compiler Screenshot](screenshot.png)](https://loferyx.onrender.com)
+
+---
+
 </div>
 
-# Run and deploy your AI Studio app
+## 🚀 Overview
 
-This contains everything you need to run your app locally.
+**Loferyx Compiler** is an ultra-fast, retro-styled online editor designed for developers who appreciate speed and minimalist design. Whether you are debugging a quick script or testing algorithms, Loferyx combines the aesthetic purity of classic computing with the power of modern execution technology.
 
-View your app in AI Studio: https://ai.studio/apps/4c156630-8be0-4303-9204-7434168d94e0
+## 🕹️ Key Features
 
-## Run Locally
+*   **Retro Aesthetic**: A distinct visual style inspired by classic computing environments.
+*   **Instant Execution**: Run your code in milliseconds.
+*   **Multi-Language Support**: Currently supporting:
+    *   🐍 Python
+    *   🟨 JavaScript
+    *   ☕ Java
+    *   ⚙️ C++
+    *   🏷️ C#
+*   **Minimalist Editor**: Focus on what matters—the code.
 
-**Prerequisites:**  Node.js
+## 🛠️ Built With
 
+Loferyx is built using:
+*   [React](https://reactjs.org/) for a responsive and modular UI.
+*   [Tailwind CSS](https://tailwindcss.com/) for precision styling.
+*   Modern web performance optimization techniques.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+
+<div align="center">
+
+### Start Compiling Now
+[Visit Loferyx](https://loferyx.onrender.com)
+
+*Built with passion for pure, efficient coding.*
+
+</div>
