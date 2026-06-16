@@ -249,7 +249,7 @@ Request: ${prompt}`
 
   // Compile endpoint
   app.post('/api/compile', limiter, async (req, res) => {
-    const { code, language } = req.body;
+    const { code, language, input = "" } = req.body;
 
     if (!code || typeof code !== 'string') {
       res.status(400).json({ error: 'Code is required and must be a string.' });
@@ -362,7 +362,7 @@ ${code}`;
         { 
           compiler: compiler,
           code: code,
-          input: ""
+          input: input
         },
         {
           headers: {
@@ -378,7 +378,30 @@ ${code}`;
       
       let mappedError = response.data.error || '';
       if (mappedError === 'Internal error: code execution failed') {
-        mappedError = 'Execution Error: Your code threw a runtime exception, timed out, or contained a syntax error. (Sandbox API hides tracebacks for security).';
+        const geminiApiKey = process.env.GEMINI_API_KEY;
+        if (geminiApiKey && geminiApiKey !== 'MY_GEMINI_API_KEY') {
+          try {
+            const ai = new GoogleGenAI({
+              apiKey: geminiApiKey,
+              httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
+            });
+            const prompt = `The following ${language} code threw a runtime or compilation error. Please output ONLY the exact standard error (stderr) or compiler error message that this code produces. Do not explain it or wrap in markdown blocks. Code:\n${code}\n\nStandard Input:\n${input||"None"}`;
+            const aiResp = await ai.models.generateContent({
+              model: 'gemini-3.5-flash',
+              contents: prompt,
+              config: { temperature: 0.0 }
+            });
+            let aiSyntaxError = aiResp.text || '';
+            if (aiSyntaxError.startsWith('```')) {
+                aiSyntaxError = aiSyntaxError.replace(/```[a-z]*\n/g, '').replace(/```/g, '').trim();
+            }
+            mappedError = aiSyntaxError || 'Execution Error: Application crashed or contained syntax errors.';
+          } catch (e) {
+            mappedError = 'Execution Error: Your code threw a runtime exception, timed out, or contained a syntax error.';
+          }
+        } else {
+          mappedError = 'Execution Error: Your code threw a runtime exception, timed out, or contained a syntax error. (Sandbox API hides tracebacks for security).';
+        }
       }
 
       const responseStatus = response.data.status === 'error' ? 'error' : 'success';

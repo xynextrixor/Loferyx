@@ -1,13 +1,15 @@
 import React from 'react';
 import { Terminal, AlertCircle, Clock, CheckCircle, Wand2, Sparkles } from 'lucide-react';
 
-interface OutputPanelProps {
+export interface OutputPanelProps {
   output: string;
   error: string;
   executionTime: number | null;
   isLoading: boolean;
   status: 'idle' | 'success' | 'error' | 'loading';
   onExplainError?: (error: string) => void;
+  stdin?: string;
+  onStdinChange?: (value: string) => void;
 }
 
 export const OutputPanel: React.FC<OutputPanelProps> = ({
@@ -17,6 +19,8 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
   isLoading,
   status,
   onExplainError,
+  stdin,
+  onStdinChange,
 }) => {
   return (
     <div className="flex flex-col h-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden" id="output-panel-outer">
@@ -83,11 +87,25 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
           )}
 
           {!isLoading && !output && !error && (
-            <div className="text-gray-600 dark:text-gray-400 italic text-center py-10 flex flex-col items-center justify-center gap-2">
+            <div className="text-gray-600 dark:text-gray-400 italic text-center py-6 flex flex-col items-center justify-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-8 mb-4">
               <span className="text-zinc-800 text-2xl">&lt;/&gt;</span>
               <span>Awaiting code compilation. Press 'RUN CODE' to execute.</span>
             </div>
           )}
+
+          {/* STDIN Input Area */}
+          <div className="space-y-1 mb-4">
+            <div className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400 tracking-wider mb-2 select-none border-b border-zinc-200 dark:border-zinc-800 pb-0.5 max-w-max">
+              STDIN (Standard Input)
+            </div>
+            <textarea
+              value={stdin || ''}
+              onChange={(e) => onStdinChange && onStdinChange(e.target.value)}
+              placeholder="Enter terminal input here..."
+              className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white font-mono text-xs p-3 border border-zinc-200 dark:border-zinc-800 rounded outline-none focus:border-red-500 transition-colors resize-y min-h-[60px]"
+              disabled={isLoading}
+            />
+          </div>
 
           {/* stdout - strictly white as per request */}
           {!isLoading && output && (

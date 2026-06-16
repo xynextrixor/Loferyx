@@ -99,6 +99,7 @@ export const CompilerPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
+  const [stdin, setStdin] = useState('');
   const [isChatting, setIsChatting] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [fontSize, setFontSize] = useState(14);
@@ -274,7 +275,8 @@ export const CompilerPage: React.FC = () => {
     try {
       const res = await axios.post<CompileResponse>('/api/compile', {
         code: currentCode,
-        language
+        language,
+        input: stdin
       });
       
       setOutput(res.data.output || '');
@@ -852,6 +854,8 @@ export const CompilerPage: React.FC = () => {
             isLoading={isLoading} 
             status={status}
             onExplainError={handleExplainError}
+            stdin={stdin}
+            onStdinChange={setStdin}
           />
         </section>
         </Panel>
@@ -999,6 +1003,8 @@ export const CompilerPage: React.FC = () => {
                 isLoading={isLoading} 
                 status={status}
                 onExplainError={handleExplainError}
+                stdin={stdin}
+                onStdinChange={setStdin}
               />
             </section>
           </div>
