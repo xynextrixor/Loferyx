@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 
 export function useCollaboration(
   sessionId: string | null,
-  editorInstance: any
+  editorInstance: any,
+  isHost: boolean = false
 ) {
   const [collaboratorsCount, setCollaboratorsCount] = useState(1);
   const [providerInstance, setProviderInstance] = useState<any>(null);
@@ -38,7 +39,7 @@ export function useCollaboration(
         const type = ydoc.getText('monaco');
 
         provider.on('sync', (isSynced: boolean) => {
-          if (isSynced && type.length === 0 && provider.awareness.getStates().size <= 1) {
+          if (isSynced && isHost && type.length === 0) {
             type.insert(0, editorInstance.getValue());
           }
         });

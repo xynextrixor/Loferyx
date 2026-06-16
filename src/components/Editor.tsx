@@ -79,7 +79,11 @@ export const Editor: React.FC<EditorProps> = ({
           renderLineHighlight: 'all',
           cursorBlinking: 'smooth',
           cursorSmoothCaretAnimation: 'on',
-          contextmenu: false,
+          quickSuggestions: true,
+          suggestOnTriggerCharacters: true,
+          wordBasedSuggestions: 'currentDocument',
+          snippetSuggestions: 'inline',
+          contextmenu: true,
           scrollbar: {
             verticalScrollbarSize: 8,
             horizontalScrollbarSize: 8,

@@ -89,19 +89,22 @@ export const CompilerPage: React.FC = () => {
 
   // Collaboration State
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isHost, setIsHost] = useState(false);
   const [editorInstance, setEditorInstance] = useState<any>(null);
-  const { collaboratorsCount, provider, ydoc } = useCollaboration(sessionId, editorInstance);
+  const { collaboratorsCount, provider, ydoc } = useCollaboration(sessionId, editorInstance, isHost);
 
   const handleCreateSession = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const genSeg = () => Array.from({length:4}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
     const id = genSeg();
+    setIsHost(true);
     setSessionId(id);
   };
 
   const handleJoinSession = () => {
     const id = window.prompt('Enter Session ID:');
     if (id && id.trim()) {
+      setIsHost(false);
       setSessionId(id.trim());
     }
   };
@@ -111,6 +114,7 @@ export const CompilerPage: React.FC = () => {
       setCode(editorInstance.getValue());
     }
     setSessionId(null);
+    setIsHost(false);
   };
 
   useEffect(() => {
@@ -154,7 +158,7 @@ export const CompilerPage: React.FC = () => {
     
     const initLanguage = () => {
       // Set initial if room was just created
-      if (!metaMap.has('language') && provider.awareness.getStates().size <= 1) {
+      if (!metaMap.has('language') && isHost) {
         metaMap.set('language', language);
       }
     };
