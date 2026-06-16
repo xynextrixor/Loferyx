@@ -1,6 +1,6 @@
 {
-  "name": "LOFERYX",
-  "description": "An online code compiler that supports Python, JavaScript, Java, C++, and C# with a Sleek Interface layout.",
+  "name": "Loferyx Compiler",
+  "description": "Loferyx Compiler: An online code compiler that supports Python, JavaScript, Java, C++, and C# with a Sleek Interface layout.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
