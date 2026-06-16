@@ -77,22 +77,19 @@ export const CompilerPage: React.FC = () => {
   // Fetch shared snippet
   useEffect(() => {
     if (snippetId) {
-      axios.get(`/api/snippet/${snippetId}`)
+      axios.get(`/api/snippet/${snippetId.toUpperCase()}`)
         .then(res => {
           if (res.data) {
             setLanguage(res.data.language);
             setCode(res.data.code);
-            if (editorInstance) {
-              editorInstance.setValue(res.data.code);
-            }
           }
         })
         .catch(err => {
           console.error("Snippet fetch error", err);
-          alert("Shared snippet not found or expired.");
+          navigate('/compiler', { replace: true });
         });
     }
-  }, [snippetId, editorInstance]);
+  }, [snippetId, navigate]);
   const [output, setOutput] = useState('');
   const [errorObj, setErrorObj] = useState('');
   const [executionTime, setExecutionTime] = useState<number | null>(null);
@@ -370,7 +367,7 @@ export const CompilerPage: React.FC = () => {
 
   const handleLoadShare = () => {
     if (!loadIdInput.trim()) return;
-    navigate(`/m/${loadIdInput.trim()}`);
+    navigate(`/m/${loadIdInput.trim().toUpperCase()}`);
     setShowLoadModal(false);
     setLoadIdInput('');
   };

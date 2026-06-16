@@ -66,7 +66,11 @@ async function startServer() {
       res.status(400).json({ error: 'Code is required.' });
       return;
     }
-    const id = Math.random().toString(36).substring(2, 5);
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let id = '';
+    for (let i = 0; i < 4; i++) {
+      id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
     saveSnippet(id, code, language);
     res.json({ id });
   });
