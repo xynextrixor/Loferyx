@@ -41,6 +41,46 @@ async function startServer() {
     res.json({ status: 'ok' });
   });
 
+  // Snippet endpoints
+  const snippetsFile = path.join(process.cwd(), 'snippets.json');
+  const getSnippets = () => {
+    try {
+      if (fs.existsSync(snippetsFile)) {
+        return JSON.parse(fs.readFileSync(snippetsFile, 'utf-8'));
+      }
+    } catch(e) {
+      console.error(e);
+    }
+    return {};
+  };
+
+  const saveSnippet = (id: string, code: string, language: string) => {
+    const snippets = getSnippets();
+    snippets[id] = { code, language };
+    fs.writeFileSync(snippetsFile, JSON.stringify(snippets));
+  };
+
+  app.post('/api/share', limiter, (req, res) => {
+    const { code, language } = req.body;
+    if (!code || typeof code !== 'string') {
+      res.status(400).json({ error: 'Code is required.' });
+      return;
+    }
+    const id = Math.random().toString(36).substring(2, 5);
+    saveSnippet(id, code, language);
+    res.json({ id });
+  });
+
+  app.get('/api/snippet/:id', (req, res) => {
+    const id = req.params.id;
+    const snippets = getSnippets();
+    if (snippets[id]) {
+      res.json(snippets[id]);
+    } else {
+      res.status(404).json({ error: 'Snippet not found' });
+    }
+  });
+
   // Languages endpoint
   app.get('/api/languages', (req, res) => {
     res.json([

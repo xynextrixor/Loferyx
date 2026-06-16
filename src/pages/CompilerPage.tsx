@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import html2canvas from 'html2canvas';
-import { Link, useSearchParams, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../hooks/useTheme';
-import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Plus, Minus, GripVertical, GripHorizontal, Wand2, ClipboardPaste, Moon, Sun } from 'lucide-react';
+import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Plus, Minus, GripVertical, GripHorizontal, Wand2, ClipboardPaste, Moon, Sun, Link2 } from 'lucide-react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 import { useWindowSize } from '../hooks/useWindowSize';
 
@@ -35,6 +35,8 @@ export const CompilerPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { id: snippetId } = useParams<{id?: string}>();
+
   let initialLang = searchParams.get('lang') || 'javascript';
   if (!['python', 'javascript', 'java', 'cpp', 'csharp'].includes(initialLang)) {
     initialLang = 'javascript';
@@ -69,6 +71,26 @@ export const CompilerPage: React.FC = () => {
     // Clean up temporary snippet from sessionStorage once mounted
     sessionStorage.removeItem('temp_snippet_code');
   }, []);
+
+  // Fetch shared snippet
+  useEffect(() => {
+    if (snippetId) {
+      axios.get(`/api/snippet/${snippetId}`)
+        .then(res => {
+          if (res.data) {
+            setLanguage(res.data.language);
+            setCode(res.data.code);
+            if (editorInstance) {
+              editorInstance.setValue(res.data.code);
+            }
+          }
+        })
+        .catch(err => {
+          console.error("Snippet fetch error", err);
+          alert("Shared snippet not found or expired.");
+        });
+    }
+  }, [snippetId, editorInstance]);
   const [output, setOutput] = useState('');
   const [errorObj, setErrorObj] = useState('');
   const [executionTime, setExecutionTime] = useState<number | null>(null);
@@ -330,6 +352,27 @@ export const CompilerPage: React.FC = () => {
     a.click();
   };
 
+  const [isSharing, setIsSharing] = useState(false);
+  const handleShareLink = async () => {
+    if (isSharing) return;
+    setIsSharing(true);
+    try {
+      const currentCode = editorInstance ? editorInstance.getValue() : code;
+      const res = await axios.post('/api/share', { code: currentCode, language });
+      if (res.data.id) {
+        const url = `https://loferyx.onrender.com/m/${res.data.id}`;
+        await navigator.clipboard.writeText(url);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+        // Optional user feedback 
+      }
+    } catch (err) {
+      alert("Failed to create shareable link");
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   const handleGenerateCode = async () => {
     if (!aiPrompt.trim() || isGeneratingCode) return;
     setIsGeneratingCode(true);
@@ -587,6 +630,15 @@ export const CompilerPage: React.FC = () => {
             >
               <MessageSquare size={12} className={isChatting ? "text-red-500 animate-bounce" : "text-red-500"} />
               <span>AI CHAT</span>
+            </button>
+            <button
+              onClick={handleShareLink}
+              disabled={isSharing || isLoading}
+              className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-500 text-gray-600 dark:text-gray-400 hover:text-white px-3.5 py-2 rounded-lg font-mono text-[10px] items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 flex"
+              id="compiler-share-btn"
+            >
+              <Link2 size={12} className="text-blue-500" />
+              <span>{isSharing ? 'SAVING...' : 'SHARE'}</span>
             </button>
 
             <button

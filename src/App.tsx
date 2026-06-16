@@ -1,5 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LandingPage } from './pages/LandingPage';
 import { CompilerPage } from './pages/CompilerPage';
 import { SnippetsPage } from './pages/SnippetsPage';
@@ -49,6 +49,7 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/compiler" element={<CompilerPage />} />
           <Route path="/snippets" element={<SnippetsPage />} />
+          <Route path="/m/:id" element={<CompilerPage />} />
         </Routes>
       </Router>
     </ErrorBoundary>
