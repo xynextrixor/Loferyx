@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ScrollCodeCompiler } from '../components/ScrollCodeCompiler';
 import { useTheme } from '../hooks/useTheme';
@@ -6,24 +6,38 @@ import { Sun, Moon } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
     const { isDark, toggleTheme } = useTheme();
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const navClass = `fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md border-b ${isScrolled ? 'bg-red-600 border-red-700' : 'bg-zinc-100/70 dark:bg-surface/70 border-black/10 dark:border-white/10'}`;
+    const textColor = isScrolled ? 'text-zinc-950' : 'text-zinc-600 dark:text-on-surface-variant';
+    const linkColor = isScrolled ? 'text-zinc-950 hover:text-green-400 hover:scale-105' : 'text-zinc-600 dark:text-on-surface-variant hover:text-primary';
+
     return (
         <div className="antialiased min-h-screen flex flex-col font-body-md text-text-body-md bg-zinc-50 dark:bg-background text-zinc-900 dark:text-on-surface w-full overflow-x-hidden">
             {/* TopNavBar */}
-            <nav className="fixed top-0 w-full z-50 bg-zinc-100/70 dark:bg-surface/70 backdrop-blur-md border-b border-black/10 dark:border-white/10">
-                <div className="flex justify-between items-center px-4 md:px-margin-desktop py-unit-md max-w-container-max mx-auto">
+            <nav className={navClass}>
+                <div className="flex justify-between items-center px-4 md:px-margin-desktop py-2 max-w-container-max mx-auto">
                     <Link to="/" className="h-10 flex items-center gap-3">
                         <img src="/logo.svg" alt="LOFERYX" className="h-full object-contain" />
-                        <span className="font-display-md text-xl font-bold text-zinc-900 dark:text-white tracking-tight">Loferyx Compiler</span>
+                        <span className={`font-display-md text-xl font-bold tracking-tight ${isScrolled ? 'text-zinc-950' : 'text-zinc-900 dark:text-white'}`}>Loferyx Compiler</span>
                     </Link>
                     <div className="hidden md:flex items-center gap-8">
-                        <Link to="/snippets" className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer">Snippets</Link>
-                        <button onClick={() => document.getElementById('languages')?.scrollIntoView({behavior: 'smooth'})} className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer bg-transparent border-none">Languages</button>
-                        <button onClick={() => document.getElementById('ai')?.scrollIntoView({behavior: 'smooth'})} className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer bg-transparent border-none">AI</button>
-                        <button onClick={toggleTheme} className="text-zinc-600 dark:text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 cursor-pointer bg-transparent border-none flex items-center" title="Toggle Theme">
+                        <Link to="/snippets" className={`${linkColor} font-body-md text-body-md transition-colors duration-200 cursor-pointer`}>Snippets</Link>
+                        <button onClick={() => document.getElementById('languages')?.scrollIntoView({behavior: 'smooth'})} className={`${linkColor} font-body-md text-body-md transition-colors duration-200 cursor-pointer bg-transparent border-none`}>Languages</button>
+                        <button onClick={() => document.getElementById('ai')?.scrollIntoView({behavior: 'smooth'})} className={`${linkColor} font-body-md text-body-md transition-colors duration-200 cursor-pointer bg-transparent border-none`}>AI</button>
+                        <button onClick={toggleTheme} className={`${linkColor} font-body-md text-body-md transition-colors duration-200 cursor-pointer bg-transparent border-none flex items-center`} title="Toggle Theme">
                             {isDark ? <Sun size={18} /> : <Moon size={18} />}
                         </button>
                     </div>
-                    <Link to="/compiler" className="bg-[#00c950] text-zinc-900 dark:text-white transition-all duration-200 ease-in-out px-6 py-2 rounded-md font-label-md hidden md:block">
+                    <Link to="/compiler" className={`${isScrolled ? 'bg-green-500 text-white' : 'bg-[#00c950] text-zinc-900 dark:text-white'} transition-all duration-200 ease-in-out px-6 py-2 rounded-md font-label-md hidden md:block hover:scale-105 hover:shadow-lg hover:shadow-green-500/20`}>
                         Launch Compiler
                     </Link>
                 </div>
@@ -42,13 +56,18 @@ export const LandingPage: React.FC = () => {
                             Experience the raw speed of a modern compiler with the aesthetic purity of classic machines. Write, test, and deploy Python, JavaScript, Java, C++, and C# in milliseconds.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-4">
-                            <Link to="/compiler" className="bg-[#00c950] text-zinc-900 dark:text-white transition-all duration-200 ease-in-out px-8 py-3 rounded-md font-body-md font-medium flex items-center gap-2">
+                            <Link to="/compiler" className="bg-[#00c950] text-zinc-900 dark:text-white transition-all duration-200 ease-in-out px-8 py-3 rounded-md font-body-md font-medium flex items-center gap-2 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20">
                                 <span className="material-symbols-outlined text-[18px]">terminal</span>
                                 Launch Compiler
                             </Link>
-                            <button className="btn-secondary px-8 py-3 rounded-md font-body-md font-medium text-zinc-900 dark:text-white">
+                            <a 
+                                href="https://anmolprofile.vercel.app" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="btn-secondary px-8 py-3 rounded-md font-body-md font-medium text-zinc-900 dark:text-white inline-block hover:scale-105 transition-all duration-200"
+                            >
                                 Learn More
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </section>
