@@ -67,6 +67,8 @@ export const CompilerPage: React.FC = () => {
     return DEFAULT_CODE[initialLang] || '';
   });
 
+  const [editorInstance, setEditorInstance] = useState<any>(null);
+
   useEffect(() => {
     // Clean up temporary snippet from sessionStorage once mounted
     sessionStorage.removeItem('temp_snippet_code');
@@ -112,7 +114,6 @@ export const CompilerPage: React.FC = () => {
   // Collaboration State
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isHost, setIsHost] = useState(false);
-  const [editorInstance, setEditorInstance] = useState<any>(null);
   const { collaboratorsCount, provider, ydoc } = useCollaboration(sessionId, editorInstance, isHost);
 
   const handleCreateSession = () => {
