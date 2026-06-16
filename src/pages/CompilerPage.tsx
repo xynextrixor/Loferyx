@@ -343,14 +343,19 @@ export const CompilerPage: React.FC = () => {
   };
 
   const downloadAsImage = async () => {
-    const element = document.getElementById('compiler-main-canvas');
-    if (!element) return;
-    const canvas = await html2canvas(element);
-    const url = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'compiler_snapshot.png';
-    a.click();
+    try {
+      const element = document.getElementById('monaco-editor-wrapper');
+      if (!element) return;
+      const canvas = await html2canvas(element);
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'compiler_snapshot.png';
+      a.click();
+    } catch (err) {
+      console.error('Screenshot failed:', err);
+      alert('Failed to take screenshot: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    }
   };
 
   const [isSharing, setIsSharing] = useState(false);
@@ -572,24 +577,7 @@ export const CompilerPage: React.FC = () => {
 
             {/* Local state persistent saving widgets */}
             <div className="hidden md:flex items-center gap-1.5">
-              <button
-                onClick={handleSave}
-                title="Save current code snippet standard"
-                className="px-3 py-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-red-500 hover:text-red-500 rounded-lg text-[10px] font-mono tracking-widest uppercase transition-all flex items-center gap-1.5 cursor-pointer"
-                id="compiler-save-btn"
-              >
-                <Save size={12} />
-                <span>SAVE</span>
-              </button>
-              <button
-                onClick={handleLoad}
-                title="Load previous code snippet cache"
-                className="px-3 py-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-green-500 hover:text-green-500 rounded-lg text-[10px] font-mono tracking-widest uppercase transition-all flex items-center gap-1.5 cursor-pointer"
-                id="compiler-load-btn"
-              >
-                <FolderOpen size={12} />
-                <span>LOAD</span>
-              </button>
+
               <button
                 onClick={handleDownload}
                 title="Download code as file"
@@ -645,6 +633,7 @@ export const CompilerPage: React.FC = () => {
               </div>
             )}
 
+
             {/* Explain button using Gemini */}
             <button
               onClick={handleExplainCode}
@@ -655,13 +644,14 @@ export const CompilerPage: React.FC = () => {
               <MessageSquare size={12} className={isChatting ? "text-red-500 animate-bounce" : "text-red-500"} />
               <span>AI CHAT</span>
             </button>
+
             <button
               onClick={handleShareLink}
               disabled={isSharing || isLoading}
-              className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-500 text-gray-600 dark:text-gray-400 hover:text-white px-3.5 py-2 rounded-lg font-mono text-[10px] items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 flex"
+              className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-red-500 text-gray-600 dark:text-gray-400 hover:text-white px-3.5 py-2 rounded-lg font-mono text-[10px] items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 flex"
               id="compiler-share-btn"
             >
-              <Link2 size={12} className="text-blue-500" />
+              <Link2 size={12} className="text-red-500" />
               <span>{isSharing ? 'SAVING...' : isCopied ? 'COPIED!' : 'SHARE'}</span>
             </button>
             <button

@@ -34,8 +34,8 @@ export const LandingPage: React.FC = () => {
                 <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-unit-xl md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div className="flex flex-col gap-8 z-10">
                         <h1 className="font-display-lg text-[48px] md:text-[64px] font-bold leading-tight text-zinc-900 dark:text-white tracking-tighter mb-2">
-                            Code Compiler. <br/>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ff8c82]">Retro Style.</span> <br/>
+                            <span className="text-green-500">Code Compiler.</span> <br/>
+                            <span className="text-red-500">Retro Style.</span> <br/>
                             Instant Execution.
                         </h1>
                         <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl leading-relaxed">
