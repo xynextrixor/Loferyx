@@ -72,7 +72,7 @@ export const LandingPage: React.FC = () => {
                     </div>
                     <div className="hidden lg:flex justify-center items-center">
                         <img 
-                            src="../public/character.png" 
+                            src="/character.png" 
                             alt="My Character" 
                             className="max-w-full h-auto object-contain"
                             referrerPolicy="no-referrer"
@@ -90,23 +90,23 @@ export const LandingPage: React.FC = () => {
                     <h2 className="font-headline-lg text-headline-lg text-zinc-900 dark:text-white mb-12 text-center">Supported Languages</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         {/* Lang Cards */}
-                        <Link to="/compiler?lang=python" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20">
+                        <Link to="/compiler?lang=python" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500">
                             <span className="material-symbols-outlined text-4xl text-green-600">code</span>
                             <span className="font-body-md font-medium text-red-600">Python</span>
                         </Link>
-                        <Link to="/compiler?lang=javascript" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500 hover:shadow-lg hover:shadow-red-500/20">
+                        <Link to="/compiler?lang=javascript" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500">
                             <span className="material-symbols-outlined text-4xl text-red-600">javascript</span>
                             <span className="font-body-md font-medium text-green-600">JavaScript</span>
                         </Link>
-                        <Link to="/compiler?lang=java" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20">
+                        <Link to="/compiler?lang=java" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500">
                             <span className="material-symbols-outlined text-4xl text-green-600">coffee</span>
                             <span className="font-body-md font-medium text-red-600">Java</span>
                         </Link>
-                        <Link to="/compiler?lang=cpp" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500 hover:shadow-lg hover:shadow-red-500/20">
+                        <Link to="/compiler?lang=cpp" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500">
                             <span className="material-symbols-outlined text-4xl text-red-600">developer_mode</span>
                             <span className="font-body-md font-medium text-green-600">C++</span>
                         </Link>
-                        <Link to="/compiler?lang=csharp" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20">
+                        <Link to="/compiler?lang=csharp" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500">
                             <span className="material-symbols-outlined text-4xl text-green-600">terminal</span>
                             <span className="font-body-md font-medium text-red-600">C#</span>
                         </Link>
