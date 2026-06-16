@@ -89,6 +89,7 @@ async function startServer() {
   app.get('/api/languages', (req, res) => {
     res.json([
       { id: 'python', name: 'Python' },
+      { id: 'c', name: 'C' },
       { id: 'javascript', name: 'JavaScript' },
       { id: 'java', name: 'Java' },
       { id: 'cpp', name: 'C++' },
@@ -260,7 +261,7 @@ Request: ${prompt}`
       return;
     }
 
-    const validLanguages = ['python', 'javascript', 'java', 'cpp', 'csharp'];
+    const validLanguages = ['python', 'javascript', 'java', 'cpp', 'csharp', 'c'];
     if (!language || !validLanguages.includes(language)) {
       res.status(400).json({ error: 'Invalid or missing language.' });
       return;
@@ -350,7 +351,8 @@ ${code}`;
         javascript: 'typescript-deno',
         java: 'openjdk-25',
         cpp: 'g++-15',
-        csharp: 'dotnet-csharp-9'
+        csharp: 'dotnet-csharp-9',
+        c: 'gcc-15'
       };
       
       const compiler = compilerMap[language] || language;

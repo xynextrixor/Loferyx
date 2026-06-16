@@ -21,6 +21,7 @@ import { useCollaboration } from '../hooks/useCollaboration';
 
 // Default code templates
 const DEFAULT_CODE: Record<string, string> = {
+  c: '#include <stdio.h>\n\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}',
   python: 'print("Hello, World!")\n# Write your Python 3 code here',
   javascript: 'console.log("Hello, World!");\n// Write your JavaScript/TypeScipt here',
   java: 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}',
@@ -38,11 +39,12 @@ export const CompilerPage: React.FC = () => {
   const { id: snippetId } = useParams<{id?: string}>();
 
   let initialLang = searchParams.get('lang') || 'javascript';
-  if (!['python', 'javascript', 'java', 'cpp', 'csharp'].includes(initialLang)) {
+  if (!['python', 'javascript', 'java', 'cpp', 'csharp', 'c'].includes(initialLang)) {
     initialLang = 'javascript';
   }
   const [languages, setLanguages] = useState<Language[]>([
     { id: 'python', name: 'Python' },
+    { id: 'c', name: 'C' },
     { id: 'javascript', name: 'JavaScript' },
     { id: 'java', name: 'Java' },
     { id: 'cpp', name: 'C++' },
@@ -142,7 +144,7 @@ export const CompilerPage: React.FC = () => {
 
   useEffect(() => {
     let lang = searchParams.get('lang') || 'javascript';
-    if (!['python', 'javascript', 'java', 'cpp', 'csharp'].includes(lang)) {
+    if (!['python', 'javascript', 'java', 'cpp', 'csharp', 'c'].includes(lang)) {
       lang = 'javascript';
     }
     setLanguage(lang);
@@ -328,7 +330,8 @@ export const CompilerPage: React.FC = () => {
       javascript: 'js',
       java: 'java',
       cpp: 'cpp',
-      csharp: 'cs'
+      csharp: 'cs',
+      c: 'c'
     };
     const extension = extensions[language] || 'txt';
     const blob = new Blob([code], { type: 'text/plain' });
@@ -744,7 +747,7 @@ export const CompilerPage: React.FC = () => {
           <div className="flex items-center justify-between px-4 py-2 border-t border-x border-zinc-200 dark:border-zinc-800 rounded-t-lg bg-zinc-100 dark:bg-zinc-900 text-[10px] font-mono shrink-0 select-none text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-2.5">
               <span className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider">main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : 'cs'}</span>
+              <span className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider">main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : language === 'c' ? 'c' : 'cs'}</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 border border-zinc-200 dark:border-zinc-800 rounded bg-zinc-50 dark:bg-zinc-950 p-[2px]">
@@ -895,7 +898,7 @@ export const CompilerPage: React.FC = () => {
               <div className="flex items-center justify-between px-4 py-2 border-t border-x border-zinc-200 dark:border-zinc-800 rounded-t-lg bg-zinc-100 dark:bg-zinc-900 text-[10px] font-mono shrink-0 select-none text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-2.5">
                   <span className="w-2 h-2 rounded-full bg-green-500" />
-                  <span className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider">main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : 'cs'}</span>
+                  <span className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider">main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : language === 'c' ? 'c' : 'cs'}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1 border border-zinc-200 dark:border-zinc-800 rounded bg-zinc-50 dark:bg-zinc-950 p-[2px]">

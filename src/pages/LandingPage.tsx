@@ -88,11 +88,15 @@ export const LandingPage: React.FC = () => {
                 {/* Languages Section */}
                 <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-unit-xl" id="languages">
                     <h2 className="font-headline-lg text-headline-lg text-zinc-900 dark:text-white mb-12 text-center">Supported Languages</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                         {/* Lang Cards */}
                         <Link to="/compiler?lang=python" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500">
                             <span className="material-symbols-outlined text-4xl text-green-600">code</span>
                             <span className="font-body-md font-medium text-red-600">Python</span>
+                        </Link>
+                        <Link to="/compiler?lang=c" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500">
+                            <span className="material-symbols-outlined text-4xl text-green-600">data_object</span>
+                            <span className="font-body-md font-medium text-red-600">C</span>
                         </Link>
                         <Link to="/compiler?lang=javascript" className="glass-card glow-effect rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:border-red-500">
                             <span className="material-symbols-outlined text-4xl text-red-600">javascript</span>
