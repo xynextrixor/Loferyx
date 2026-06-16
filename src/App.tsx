@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { LandingPage } from './pages/LandingPage';
 import { CompilerPage } from './pages/CompilerPage';
 import { SnippetsPage } from './pages/SnippetsPage';
@@ -44,6 +45,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <DynamicFavicon />
+      <Toaster position="bottom-right" richColors />
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />

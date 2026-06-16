@@ -4,6 +4,7 @@ import * as htmlToImage from 'html-to-image';
 import { Link, useSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../hooks/useTheme';
+import { toast } from 'sonner';
 import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Check, Plus, Minus, GripVertical, GripHorizontal, Wand2, ClipboardPaste, Moon, Sun, Link2 } from 'lucide-react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 import { useWindowSize } from '../hooks/useWindowSize';
@@ -376,9 +377,10 @@ export const CompilerPage: React.FC = () => {
       a.href = dataUrl;
       a.download = 'compiler_snapshot.png';
       a.click();
+      toast.success('Screenshot downloaded successfully');
     } catch (err) {
       console.error('Screenshot failed:', err);
-      alert('Failed to take screenshot: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      toast.error('Failed to take screenshot: ' + (err instanceof Error ? err.message : 'Unknown error'));
     }
   };
 
@@ -388,9 +390,10 @@ export const CompilerPage: React.FC = () => {
     try {
       await navigator.clipboard.writeText(text);
       setIsCopyingModal(true);
+      toast.success('Generated code copied to clipboard');
       setTimeout(() => setIsCopyingModal(false), 2000);
     } catch (e) {
-      // ignore
+      toast.error('Failed to copy code to clipboard');
     }
   };
 
@@ -413,14 +416,16 @@ export const CompilerPage: React.FC = () => {
         try {
           await navigator.clipboard.writeText(url);
           setIsCopied(true);
+          toast.success('Share link generated and copied to clipboard');
           setTimeout(() => setIsCopied(false), 2000);
         } catch (e) {
           setIsCopied(true);
+          toast.success('Share link generated');
           setTimeout(() => setIsCopied(false), 2000);
         }
       }
     } catch (err: any) {
-      alert(`Failed to create shareable link: ${err?.response?.data?.error || err.message}`);
+      toast.error(`Failed to create shareable link: ${err?.response?.data?.error || err.message}`);
     } finally {
       setIsSharing(false);
     }
@@ -438,9 +443,10 @@ export const CompilerPage: React.FC = () => {
       if (res.data.code) {
         setCode(res.data.code);
         setAiPrompt('');
+        toast.success('Code generation completed');
       }
     } catch (err: any) {
-      alert(`AI Generation Failed: ${err.message}`);
+      toast.error(`AI Generation Failed: ${err.message}`);
     } finally {
       setIsGeneratingCode(false);
     }

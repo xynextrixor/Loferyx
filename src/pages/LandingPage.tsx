@@ -45,14 +45,14 @@ export const LandingPage: React.FC = () => {
             
             <main className="flex-grow pt-16 pb-16">
                 {/* Hero Section */}
-                <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-unit-xl md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-8 pb-unit-xl md:pt-8 md:pb-15 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                      <div className="flex flex-col gap-8 z-10">
                         <h1 className="font-display-lg text-[48px] md:text-[64px] font-bold leading-tight text-zinc-900 dark:text-white tracking-tighter mb-2">
                             <span className="text-green-500">Code Compiler.</span> <br/>
                             <span className="text-red-500">Retro Style.</span> <br/>
                             Instant Execution.
                         </h1>
-                        <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl leading-relaxed">
+                        <p className="font-body-lg text-body-lg text-zinc-600 dark:text-on-surface-variant max-w-xl leading-relaxed">
                             Experience the raw speed of a modern compiler with the aesthetic purity of classic machines. Write, test, and deploy Python, JavaScript, Java, C++, and C# in milliseconds.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-4">
@@ -128,25 +128,25 @@ export const LandingPage: React.FC = () => {
                                     <span className="font-label-md text-label-md text-[#61BB46]">Beta</span>
                                 </div>
                                 <h2 className="font-headline-lg text-headline-lg text-zinc-900 dark:text-white mb-4">AI-Powered Companion</h2>
-                                <p className="font-body-lg text-body-lg text-on-surface-variant mb-8">
+                                <p className="font-body-lg text-body-lg text-zinc-600 dark:text-on-surface-variant mb-8">
                                     Write code faster with an intelligent assistant that understands your context and anticipates your needs.
                                 </p>
                                 <ul className="space-y-4">
                                     <li className="flex items-start gap-3">
                                         <span className="material-symbols-outlined text-primary mt-0.5">check_circle</span>
-                                        <span className="font-body-md text-on-surface">Explain complex code blocks instantly</span>
+                                        <span className="font-body-md text-zinc-900 dark:text-on-surface">Explain complex code blocks instantly</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="material-symbols-outlined text-primary mt-0.5">check_circle</span>
-                                        <span className="font-body-md text-on-surface">Find and resolve elusive bugs</span>
+                                        <span className="font-body-md text-zinc-900 dark:text-on-surface">Find and resolve elusive bugs</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="material-symbols-outlined text-primary mt-0.5">check_circle</span>
-                                        <span className="font-body-md text-on-surface">Optimize algorithms for peak performance</span>
+                                        <span className="font-body-md text-zinc-900 dark:text-on-surface">Optimize algorithms for peak performance</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="material-symbols-outlined text-primary mt-0.5">check_circle</span>
-                                        <span className="font-body-md text-on-surface">Generate structured comments automatically</span>
+                                        <span className="font-body-md text-zinc-900 dark:text-on-surface">Generate structured comments automatically</span>
                                     </li>
                                 </ul>
                             </div>
@@ -168,21 +168,21 @@ export const LandingPage: React.FC = () => {
                                 <span className="material-symbols-outlined text-primary">bolt</span>
                             </div>
                             <h3 className="font-headline-md text-headline-md font-semibold text-zinc-900 dark:text-white">Fast Execution</h3>
-                            <p className="font-body-md text-on-surface-variant leading-relaxed">Sub-millisecond compilation times across all supported languages, powered by optimized runtime environments.</p>
+                            <p className="font-body-md text-zinc-600 dark:text-on-surface-variant leading-relaxed">Sub-millisecond compilation times across all supported languages, powered by optimized runtime environments.</p>
                         </div>
                         <div className="glass-card rounded-xl p-8 flex flex-col gap-4 border border-white/5 hover:border-white/10 transition-colors">
                             <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-2">
                                 <span className="material-symbols-outlined text-primary">visibility</span>
                             </div>
                             <h3 className="font-headline-md text-headline-md font-semibold text-zinc-900 dark:text-white">Real-time Output</h3>
-                            <p className="font-body-md text-on-surface-variant leading-relaxed">See the results of your code instantly as you type. No need to constantly hit refresh or recompile.</p>
+                            <p className="font-body-md text-zinc-600 dark:text-on-surface-variant leading-relaxed">See the results of your code instantly as you type. No need to constantly hit refresh or recompile.</p>
                         </div>
                         <div className="glass-card rounded-xl p-8 flex flex-col gap-4 border border-white/5 hover:border-white/10 transition-colors">
                             <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-2">
                                 <span className="material-symbols-outlined text-primary">lock</span>
                             </div>
                             <h3 className="font-headline-md text-headline-md font-semibold text-zinc-900 dark:text-white">Secure Compilation</h3>
-                            <p className="font-body-md text-on-surface-variant leading-relaxed">Execute unknown code safely in isolated, ephemeral sandboxes protecting your host environment.</p>
+                            <p className="font-body-md text-zinc-600 dark:text-on-surface-variant leading-relaxed">Execute unknown code safely in isolated, ephemeral sandboxes protecting your host environment.</p>
                         </div>
                         <Link to="/snippets" className="glass-card glow-effect rounded-xl p-8 flex flex-col gap-4 border border-white/5 cursor-pointer transition-all duration-300 hover:-translate-y-1 block">
                             <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-2">
@@ -192,14 +192,14 @@ export const LandingPage: React.FC = () => {
                                 <h3 className="font-headline-md text-headline-md font-semibold text-zinc-900 dark:text-white">Algorithms & Snippets</h3>
                                 <div className="bg-primary/10 text-primary text-xs font-bold px-2 py-1 rounded-sm uppercase tracking-wider">Browse</div>
                             </div>
-                            <p className="font-body-md text-on-surface-variant leading-relaxed">Access our ready-to-use collection of sorting algorithms (Quick, Bubble) and foundational basic snippets in multiple languages with quick copy support.</p>
+                            <p className="font-body-md text-zinc-600 dark:text-on-surface-variant leading-relaxed">Access our ready-to-use collection of sorting algorithms (Quick, Bubble) and foundational basic snippets in multiple languages with quick copy support.</p>
                         </Link>
                     </div>
                 </section>
                 
                 {/* Footer Area */}
-                <footer className="w-full border-t border-[#18181B] py-8 text-center mt-auto">
-                    <p className="text-[#A1A1AA] text-xs uppercase tracking-widest font-mono">© 2026 Loferyx. All Systems Operational.</p>
+                <footer className="w-full border-t-2 border-red-500 bg-zinc-100 dark:bg-zinc-900 py-12 text-center mt-auto">
+                    <p className="text-green-600 dark:text-green-400 font-bold uppercase tracking-widest font-mono">© 2026 Loferyx Compiler - Secure & Instant Execution</p>
                 </footer>
             </main>
         </div>

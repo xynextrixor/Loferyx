@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 
 export function useCollaboration(
   sessionId: string | null,
@@ -16,6 +17,7 @@ export function useCollaboration(
     let ydoc: any;
     let provider: any;
     let binding: any;
+    let hasShownSuccess = false;
 
     async function setupYjs() {
       try {
@@ -36,6 +38,15 @@ export function useCollaboration(
           setProviderInstance(provider);
         }
 
+        provider.on('status', (event: any) => {
+          if (event.status === 'connected' && !hasShownSuccess) {
+            hasShownSuccess = true;
+            toast.success(`Successfully connected to session: ${sessionId!.substring(0, 8)}...`);
+          } else if (event.status === 'disconnected') {
+            hasShownSuccess = false; // Reset if they want to reconnect
+          }
+        });
+
         const type = ydoc.getText('monaco');
 
         provider.on('sync', (isSynced: boolean) => {
@@ -51,13 +62,24 @@ export function useCollaboration(
           provider.awareness
         );
 
+        let previousCount = provider.awareness.getStates().size || 1;
         provider.awareness.on('change', () => {
           if (isMounted) {
-            setCollaboratorsCount(provider.awareness.getStates().size);
+            const currentCount = provider.awareness.getStates().size;
+            if (hasShownSuccess) {
+              if (currentCount > previousCount) {
+                toast.info('A collaborator joined the session');
+              } else if (currentCount < previousCount) {
+                toast.info('A collaborator left the session');
+              }
+            }
+            previousCount = currentCount;
+            setCollaboratorsCount(currentCount);
           }
         });
       } catch (err) {
         console.error("Yjs setup error:", err);
+        toast.error("Failed to connect to collaboration server");
       }
     }
 
