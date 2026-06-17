@@ -466,38 +466,61 @@ export const CompilerPage: React.FC = () => {
     setChatHistory(newHistory);
     setIsChatting(true);
 
-    try {
-      const historyStr = chatHistory.map(m => ({
-        role: m.role,
-        parts: [{ text: m.text }]
-      }));
+    // Add empty assistant response to state for typing effect
+    const assistantMessageIndex = newHistory.length;
+    setChatHistory([...newHistory, { role: 'model', text: '' }]);
 
-      const res = await axios.post('/api/chat', {
-        message: userMessage,
-        history: historyStr,
-        language,
-        codeContext: code
+    const updateAssistantMessage = (text: string) => {
+      setChatHistory(prev => {
+        const next = [...prev];
+        next[assistantMessageIndex] = { role: 'model', text };
+        return next;
       });
-      
-      let responseText = res.data.response || 'No response.';
+    };
 
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          history: chatHistory.map(m => ({
+            role: m.role,
+            parts: [{ text: m.text }]
+          })),
+          language,
+          codeContext: code
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Chat request failed');
+      }
+      
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let responseText = '';
+      
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        console.log('Frontend - Received chunk:', chunk);
+        responseText += chunk;
+        updateAssistantMessage(responseText);
+      }
+      
+      // Post-processing for code blocks in the complete responseText
       const codeBlockRegex = /```[\w]*\n([\s\S]*?)```/;
       const match = responseText.match(codeBlockRegex);
       if (match && match[1]) {
         setCode(match[1].trim());
         // Clean the markdown from the text since it's now in the editor
-        responseText = responseText.replace(codeBlockRegex, '\n\n**[Code updated in the editor panel]**\n\n').trim();
+        updateAssistantMessage(responseText.replace(codeBlockRegex, '\n\n**[Code updated in the editor panel]**\n\n').trim());
       }
-
-      setChatHistory([
-        ...newHistory,
-        { role: 'model', text: responseText }
-      ]);
     } catch (err: any) {
-      setChatHistory([
-        ...newHistory,
-        { role: 'model', text: `Error: ${err.message}` }
-      ]);
+      updateAssistantMessage(`Error: ${err.message}`);
     } finally {
       setIsChatting(false);
     }

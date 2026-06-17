@@ -210,11 +210,9 @@ Request: ${prompt}`
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       console.warn('GEMINI_API_KEY is missing from environment, falling back to simulated chat.');
-      setTimeout(() => {
-        res.json({
-          response: `### Simulation Mode\nYou said: "${message}". Please provide a GEMINI_API_KEY to enable AI chat.`
-        });
-      }, 600);
+      res.setHeader('Content-Type', 'text/plain');
+      res.write('### Simulation Mode\nPlease provide a GEMINI_API_KEY to enable AI chat.');
+      res.end();
       return;
     }
 
@@ -238,12 +236,50 @@ Request: ${prompt}`
         history: history || []
       });
 
-      const response = await chat.sendMessage({ message: message });
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
 
-      res.json({ response: response.text });
+      let stream;
+      let retries = 0;
+      const MAX_RETRIES = 3;
+
+      while (retries < MAX_RETRIES) {
+        try {
+          stream = await chat.sendMessageStream({ message: message });
+          break; // Success
+        } catch (error: any) {
+          if (error.message.includes('503') || error.message.includes('UNAVAILABLE')) {
+            retries++;
+            if (retries >= MAX_RETRIES) throw error;
+            console.log(`Retry attempt ${retries} for Gemini API...`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * retries)); // Exponential backoff
+          } else {
+            throw error;
+          }
+        }
+      }
+
+      for await (const chunk of stream) {
+        // Debugging log
+        // console.log('Chunk received from Gemini:', chunk.text);
+        res.write(chunk.text);
+      }
+      res.end();
     } catch (error: any) {
       console.error('Gemini Chat Error:', error.message);
-      res.status(500).json({ error: `Failed to generate chat response: ${error.message}` });
+      
+      let message = error.message;
+      let status = 500;
+      
+      if (error.message.includes('503') || error.message.includes('UNAVAILABLE')) {
+        message = "The AI service is currently busy. Please try again in a moment.";
+        status = 503;
+      }
+
+      res.setHeader('Content-Type', 'text/plain');
+      res.status(status).write(`Error: ${message}`);
+      res.end();
     }
   });
 
