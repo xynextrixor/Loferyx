@@ -5,7 +5,7 @@ import { Link, useSearchParams, useLocation, useNavigate, useParams } from 'reac
 import axios from 'axios';
 import { useTheme } from '../hooks/useTheme';
 import { toast } from 'sonner';
-import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Check, Plus, Minus, GripVertical, GripHorizontal, Wand2, ClipboardPaste, Moon, Sun, Link2 } from 'lucide-react';
+import { Play, Save, FolderOpen, ArrowLeft, Eye, HelpCircle, ShieldAlert, Sparkles, X, ChevronRight, Download, MessageSquare, Send, Copy, Check, Plus, Minus, GripVertical, GripHorizontal, Wand2, ClipboardPaste, Moon, Sun, Link2, Braces, Terminal, Coffee, Box, Hash, Code } from 'lucide-react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 import { useWindowSize } from '../hooks/useWindowSize';
 
@@ -778,7 +778,18 @@ export const CompilerPage: React.FC = () => {
           <div className="flex items-center justify-between px-4 py-2 border-t border-x border-zinc-200 dark:border-zinc-800 rounded-t-lg bg-zinc-100 dark:bg-zinc-900 text-[10px] font-mono shrink-0 select-none text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-2.5">
               <span className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider">main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : language === 'c' ? 'c' : 'cs'}</span>
+              {language === 'javascript' && <Braces size={12} />}
+              {language === 'python' && <Terminal size={12} />}
+              {language === 'java' && <Coffee size={12} />}
+              {language === 'cpp' && <Box size={12} />}
+              {language === 'csharp' && <Hash size={12} />}
+              {language === 'c' && <Terminal size={12} />}
+              <span className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider">
+                {languages.find(l => l.id === language)?.name}
+                <span className="opacity-70 ml-1">
+                  (main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : language === 'c' ? 'c' : 'cs'})
+                </span>
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 border border-zinc-200 dark:border-zinc-800 rounded bg-zinc-50 dark:bg-zinc-950 p-[2px]">
@@ -931,7 +942,18 @@ export const CompilerPage: React.FC = () => {
               <div className="flex items-center justify-between px-4 py-2 border-t border-x border-zinc-200 dark:border-zinc-800 rounded-t-lg bg-zinc-100 dark:bg-zinc-900 text-[10px] font-mono shrink-0 select-none text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-2.5">
                   <span className="w-2 h-2 rounded-full bg-green-500" />
-                  <span className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider">main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : language === 'c' ? 'c' : 'cs'}</span>
+                  {language === 'javascript' && <Braces size={12} />}
+                  {language === 'python' && <Terminal size={12} />}
+                  {language === 'java' && <Coffee size={12} />}
+                  {language === 'cpp' && <Box size={12} />}
+                  {language === 'csharp' && <Hash size={12} />}
+                  {language === 'c' && <Terminal size={12} />}
+                  <span className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider">
+                    {languages.find(l => l.id === language)?.name}
+                    <span className="opacity-70 ml-1">
+                      (main.{language === 'cpp' ? 'cpp' : language === 'javascript' ? 'ts' : language === 'python' ? 'py' : language === 'java' ? 'java' : language === 'c' ? 'c' : 'cs'})
+                    </span>
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1 border border-zinc-200 dark:border-zinc-800 rounded bg-zinc-50 dark:bg-zinc-950 p-[2px]">
