@@ -134,7 +134,7 @@ This is a standard ${language} script.
       });
 
       const response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash',
+        model: 'gemini-2.5-flash',
         contents: `Explain the following ${language} code in detail. List its purpose, key blocks, logic flow, and tips on potential syntax or logic considerations. Format the response as elegant, premium Markdown:
 
 \`\`\`${language}
@@ -181,7 +181,7 @@ ${code}
       });
 
       const response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash',
+        model: 'gemini-2.5-flash',
         contents: `You are an expert coder. Write ONLY the raw code for the following request in ${language}. Do not include markdown code block syntax (like \`\`\`), do not include explanations, do not include HTML. The output should be strictly the raw code that can be compiled and executed directly.
         
 Request: ${prompt}`
@@ -229,7 +229,7 @@ Request: ${prompt}`
       const systemInstruction = `You are an expert ${language} coding assistant. You are helping the user understand and modify the following code:\n\n\`\`\`${language}\n${codeContext}\n\`\`\`\n\nBe highly conversational, helpful, and concise. If you write or update code, output the FULL updated code in a single markdown code block (e.g., \`\`\`${language}\\n...\\n\`\`\`).`;
 
       const chat = ai.chats.create({
-        model: 'gemini-3.5-flash',
+        model: 'gemini-2.5-flash',
         config: {
           systemInstruction
         },
@@ -240,45 +240,49 @@ Request: ${prompt}`
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
 
-      let stream;
       let retries = 0;
       const MAX_RETRIES = 3;
+      let success = false;
 
-      while (retries < MAX_RETRIES) {
+      while (retries < MAX_RETRIES && !success) {
         try {
-          stream = await chat.sendMessageStream({ message: message });
-          break; // Success
+          const stream = await chat.sendMessageStream({ message: message });
+          for await (const chunk of stream) {
+            res.write(chunk.text);
+          }
+          success = true; // Stream completed without error
         } catch (error: any) {
-          if (error.message.includes('503') || error.message.includes('UNAVAILABLE')) {
+          const errorStr = String(error.message || error);
+          if (errorStr.includes('503') || errorStr.includes('UNAVAILABLE') || errorStr.includes('high demand')) {
             retries++;
             if (retries >= MAX_RETRIES) throw error;
-            console.log(`Retry attempt ${retries} for Gemini API...`);
-            await new Promise(resolve => setTimeout(resolve, 1000 * retries)); // Exponential backoff
+            console.log(`Retry attempt ${retries} for Gemini API stream...`);
+            await new Promise(resolve => setTimeout(resolve, 1500 * retries)); // Exponential backoff
           } else {
             throw error;
           }
         }
       }
 
-      for await (const chunk of stream) {
-        // Debugging log
-        // console.log('Chunk received from Gemini:', chunk.text);
-        res.write(chunk.text);
-      }
       res.end();
     } catch (error: any) {
       console.error('Gemini Chat Error:', error.message);
       
-      let message = error.message;
-      let status = 500;
+      let message = "The AI service encountered an error. Please try again.";
+      let statusCode = 500;
       
-      if (error.message.includes('503') || error.message.includes('UNAVAILABLE')) {
-        message = "The AI service is currently busy. Please try again in a moment.";
-        status = 503;
+      const errorStr = String(error.message || error);
+      if (errorStr.includes('503') || errorStr.includes('UNAVAILABLE') || errorStr.includes('high demand')) {
+        message = "The AI service is currently busy due to high demand. Please try again in a moment.";
+        statusCode = 503;
       }
 
-      res.setHeader('Content-Type', 'text/plain');
-      res.status(status).write(`Error: ${message}`);
+      if (!res.headersSent) {
+        res.setHeader('Content-Type', 'text/plain');
+        res.status(statusCode).write(`Error: ${message}`);
+      } else {
+        res.write(`\n\n[Error: ${message}]`);
+      }
       res.end();
     }
   });
@@ -352,7 +356,7 @@ Code to execute:
 ${code}`;
 
         const response = await ai.models.generateContent({
-          model: 'gemini-3.5-flash',
+          model: 'gemini-2.5-flash',
           contents: prompt,
           config: {
             temperature: 0.0
@@ -423,7 +427,7 @@ ${code}`;
             });
             const prompt = `The following ${language} code threw a runtime or compilation error. Please output ONLY the exact standard error (stderr) or compiler error message that this code produces. Do not explain it or wrap in markdown blocks. Code:\n${code}\n\nStandard Input:\n${input||"None"}`;
             const aiResp = await ai.models.generateContent({
-              model: 'gemini-3.5-flash',
+              model: 'gemini-2.5-flash',
               contents: prompt,
               config: { temperature: 0.0 }
             });
