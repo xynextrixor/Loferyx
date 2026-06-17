@@ -69,6 +69,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
           </button>
           <button
             onClick={() => setActiveTab("metrics")}
+            id="tour-metrics-tab"
             className={`flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-widest transition-colors ${activeTab === "metrics" ? "text-zinc-900 dark:text-white border-b-2 border-green-500 pb-0.5" : "text-gray-500 hover:text-zinc-900 dark:hover:text-white"}`}
           >
             <Activity

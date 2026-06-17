@@ -60,6 +60,10 @@ export const LandingPage: React.FC = () => {
                                 <span className="material-symbols-outlined text-[18px]">terminal</span>
                                 Launch Compiler
                             </Link>
+                            <Link to="/compiler?tour=true" className="bg-red-500 hover:bg-red-600 text-white transition-all duration-200 ease-in-out px-8 py-3 rounded-md font-body-md font-medium flex items-center gap-2 hover:scale-105 hover:shadow-lg hover:shadow-red-500/20">
+                                <span className="material-symbols-outlined text-[18px]">explore</span>
+                                Take a Tour
+                            </Link>
                             <a 
                                 href="https://anmolprofile.vercel.app" 
                                 target="_blank" 
