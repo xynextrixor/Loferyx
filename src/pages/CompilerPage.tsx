@@ -166,40 +166,48 @@ export const CompilerPage: React.FC = () => {
   const [loadIdInput, setLoadIdInput] = useState("");
 
   const [runTour, setRunTour] = useState(false);
-  const [tourSteps, setTourSteps] = useState<Step[]>([
-    {
-      target: "#lang-selector-container",
-      content:
-        "Select the programming language here. The IDE supports multiple languages like Python, JavaScript, and C++.",
-      disableBeacon: true,
-    },
-    {
-      target: "#compiler-create-btn",
-      content: "Share this session with others to code together in real-time.",
-    },
-    {
-      target: "#compiler-join-btn",
-      content: "Join an existing active session via a Session ID.",
-    },
-    {
-      target: "#compiler-share-btn",
-      content: "Save your snippet and get a shareable URL to send to your friends.",
-    },
-    {
-      target: "#compiler-load-btn",
-      content: "Load your previously saved code snippets via their ID.",
-    },
-    {
-      target: "#compiler-run-btn",
-      content:
-        "Click here to execute your code! It will compile and run on secure isolated sandboxes.",
-    },
-    {
-      target: "#tour-metrics-tab",
-      content:
-        "Check the Metrics tab here to view detailed algorithmic performance, memory usage, and execution speed graphs.",
-    },
-  ]);
+  const [tourSteps, setTourSteps] = useState<Step[]>([]);
+
+  useEffect(() => {
+    setTourSteps([
+      {
+        target: "#lang-selector-container",
+        content:
+          "Select the programming language here. The IDE supports multiple languages like Python, JavaScript, and C++.",
+        disableBeacon: true,
+      },
+      {
+        target: "#compiler-create-btn",
+        content: "Share this session with others to code together in real-time.",
+      },
+      {
+        target: "#compiler-join-btn",
+        content: "Join an existing active session via a Session ID.",
+      },
+      {
+        target: isDesktop ? "#compiler-explain-btn" : "#compiler-explain-btn-mobile",
+        content: "Use the AI companion to explain code, generate snippets, and fix errors.",
+      },
+      {
+        target: "#compiler-share-btn",
+        content: "Save your snippet and get a shareable URL to send to your friends.",
+      },
+      {
+        target: "#compiler-load-btn",
+        content: "Load your previously saved code snippets via their ID.",
+      },
+      {
+        target: "#compiler-run-btn",
+        content:
+          "Click here to execute your code! It will compile and run on secure isolated sandboxes.",
+      },
+      {
+        target: "#tour-metrics-tab",
+        content:
+          "Check the Metrics tab here to view detailed algorithmic performance, memory usage, and execution speed graphs.",
+      },
+    ]);
+  }, [isDesktop]);
 
   useEffect(() => {
     // Run tour if ?tour=true or hasn't run before
@@ -1527,6 +1535,7 @@ export const CompilerPage: React.FC = () => {
       {/* Floating explain/localStorage micro utilities on layouts for extremely small screens */}
       <div className="sm:hidden flex items-center justify-between p-3 bg-zinc-100 dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 shrink-0 gap-3">
         <button
+          id="compiler-explain-btn-mobile"
           onClick={handleExplainCode}
           disabled={isChatting || isLoading}
           className="flex-1 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-2 text-[10px] rounded-lg tracking-wider font-mono flex items-center justify-center gap-1"
