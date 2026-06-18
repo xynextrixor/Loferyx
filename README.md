@@ -6,7 +6,7 @@
 
 ✨ **Fast. Precise. Aesthetic.** ✨
 
-[![Loferyx Compiler Screenshot](screenshot.png)](https://loferyx.onrender.com)
+[![Loferyx Compiler Screenshot of compiler](screenshot.png)](https://loferyx.onrender.com)
 
 ---
 
