@@ -26,7 +26,8 @@
     *   ☕ Java
     *   ⚙️ C++
     *   🏷️ C#
-*   **Minimalist Editor**: Focus on what matters—the code.
+    *.  etc
+ *   **Minimalist Editor**: Focus on what matters—the code.
 
 ## 🛠️ Built With
 
