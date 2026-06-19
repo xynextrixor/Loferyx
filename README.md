@@ -6,7 +6,7 @@
 
 ✨ **Fast. Precise. Aesthetic.** ✨
 
-[![Loferyx Compiler Screenshot of compiler](screenshot.png)](https://loferyx.onrender.com)
+[![Loferyx Compiler Screenshot](screenshot.png)](https://loferyx.onrender.com)
 
 ---
 
@@ -26,8 +26,7 @@
     *   ☕ Java
     *   ⚙️ C++
     *   🏷️ C#
-    *.  etc
- *   **Minimalist Editor**: Focus on what matters—the code.
+*   **Minimalist Editor**: Focus on what matters—the code.
 
 ## 🛠️ Built With
 

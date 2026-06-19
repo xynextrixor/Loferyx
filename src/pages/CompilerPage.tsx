@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Joyride, CallBackProps, STATUS, Step } from "react-joyride";
+import { Joyride, EventData, STATUS, Step } from "react-joyride";
 import { motion, AnimatePresence } from "motion/react";
 import * as htmlToImage from "html-to-image";
 import {
@@ -174,7 +174,7 @@ export const CompilerPage: React.FC = () => {
         target: "#lang-selector-container",
         content:
           "Select the programming language here. The IDE supports multiple languages like Python, JavaScript, and C++.",
-        disableBeacon: true,
+        skipBeacon: true,
       },
       {
         target: "#compiler-create-btn",
@@ -210,19 +210,16 @@ export const CompilerPage: React.FC = () => {
   }, [isDesktop]);
 
   useEffect(() => {
-    // Run tour if ?tour=true or hasn't run before
+    // Only run tour when requested via searchParams
     const requestedTour = searchParams.get("tour") === "true";
-    const hasRunTour = localStorage.getItem("loferyx_compiler_tour_done");
-    if (!hasRunTour || requestedTour) {
+    if (requestedTour) {
       setRunTour(true);
-      if (requestedTour) {
-        searchParams.delete("tour");
-        setSearchParams(searchParams);
-      }
+      searchParams.delete("tour");
+      setSearchParams(searchParams);
     }
   }, [searchParams, setSearchParams]);
 
-  const handleJoyrideCallback = (data: CallBackProps) => {
+  const handleJoyrideCallback = (data: EventData) => {
     const { status } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
     if (finishedStatuses.includes(status)) {
@@ -825,23 +822,23 @@ export const CompilerPage: React.FC = () => {
         steps={tourSteps}
         run={runTour}
         continuous={true}
-        showProgress={true}
-        showSkipButton={true}
-        callback={handleJoyrideCallback}
+        onEvent={handleJoyrideCallback}
+        options={{
+          arrowColor: isDark ? "#09090b" : "#ffffff",
+          backgroundColor: isDark ? "#09090b" : "#ffffff",
+          overlayColor: "rgba(0, 0, 0, 0.7)",
+          primaryColor: "#3b82f6",
+          textColor: isDark ? "#e4e4e7" : "#18181b",
+          zIndex: 1000,
+          showProgress: true,
+          buttons: ['back', 'skip', 'primary'],
+        }}
         styles={{
-          options: {
-            arrowColor: isDark ? "#09090b" : "#ffffff",
-            backgroundColor: isDark ? "#09090b" : "#ffffff",
-            overlayColor: "rgba(0, 0, 0, 0.7)",
-            primaryColor: "#3b82f6",
-            textColor: isDark ? "#e4e4e7" : "#18181b",
-            zIndex: 1000,
-          },
           tooltipContainer: {
             border: isDark ? "1px solid #27272a" : "1px solid #e4e4e7",
             borderRadius: "0.75rem",
           },
-          buttonNext: {
+          buttonPrimary: {
             backgroundColor: "rgba(59, 130, 246, 0.1)", /* blue-500/10 */
             color: "#3b82f6", /* blue-500 */
             border: "1px solid rgba(59, 130, 246, 0.3)",
@@ -1020,7 +1017,7 @@ export const CompilerPage: React.FC = () => {
             </button>
 
             <button
-              onClick={handleRunCode}
+              onClick={() => handleRunCode()}
               disabled={isLoading}
               className="bg-green-500 hover:bg-green-600 text-black hover:text-white px-5 py-2 rounded-lg font-mono font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 transition-all shadow-xl hover:shadow-green-500/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transform active:translate-y-0.5"
               id="compiler-run-btn"
@@ -1046,7 +1043,6 @@ export const CompilerPage: React.FC = () => {
             {/* Editor Workspace Block */}
             <Panel
               id="editor-panel"
-              order={1}
               defaultSize={65}
               minSize={20}
               className="flex flex-col"
@@ -1230,7 +1226,6 @@ export const CompilerPage: React.FC = () => {
             {/* Console / Output Area Panel */}
             <Panel
               id="console-panel"
-              order={2}
               defaultSize={35}
               minSize={20}
               className="flex flex-col"
