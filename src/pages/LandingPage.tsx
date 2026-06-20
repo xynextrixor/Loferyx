@@ -32,7 +32,6 @@ export const LandingPage: React.FC = () => {
                     <div className="hidden md:flex items-center gap-8">
                         <Link to="/snippets" className={`${linkColor} font-body-md text-body-md transition-colors duration-200 cursor-pointer`}>Snippets</Link>
                         <button onClick={() => document.getElementById('languages')?.scrollIntoView({behavior: 'smooth'})} className={`${linkColor} font-body-md text-body-md transition-colors duration-200 cursor-pointer bg-transparent border-none`}>Languages</button>
-                        <button onClick={() => document.getElementById('ai')?.scrollIntoView({behavior: 'smooth'})} className={`${linkColor} font-body-md text-body-md transition-colors duration-200 cursor-pointer bg-transparent border-none`}>AI</button>
                         <button onClick={toggleTheme} className={`${linkColor} font-body-md text-body-md transition-colors duration-200 cursor-pointer bg-transparent border-none flex items-center`} title="Toggle Theme">
                             {isDark ? <Sun size={18} /> : <Moon size={18} />}
                         </button>
