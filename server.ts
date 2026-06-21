@@ -24,10 +24,10 @@ async function startServer() {
   app.use(cors());
   app.use(express.json({ limit: '1mb' }));
 
-  // Rate Limiting: 100 requests per 15 minutes
+  // Rate Limiting: 500 requests per 15 minutes
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: 500,
     validate: { xForwardedForHeader: false, forwardedHeader: false, default: true },
     message: { error: 'Too many requests from this IP, please try again after 15 minutes' }
   });
@@ -307,18 +307,12 @@ Request: ${prompt}`
       return;
     }
 
-    const apiKey = process.env.COMPILER_API_KEY || 'MY_COMPILER_API_KEY';
-    if (!apiKey) {
-      console.error('COMPILER_API_KEY is missing from environment variables.');
-      res.status(500).json({ error: 'Server misconfiguration.' });
-      return;
-    }
-
+    const apiKey = process.env.COMPILER_API_KEY;
     const startTime = Date.now();
 
     // --- MOCK RESPONSE FOR DEFAULT KEY / DEV ENVIRONMENTS ---
     // If we don't have a real compiler key, instead of a static mock, use Gemini API to simulate execution.
-    if (apiKey === 'MY_COMPILER_API_KEY') {
+    if (!apiKey) {
       const geminiApiKey = process.env.GEMINI_API_KEY;
       if (!geminiApiKey || geminiApiKey === 'MY_GEMINI_API_KEY') {
         setTimeout(() => {
@@ -379,6 +373,14 @@ ${code}`;
         return;
       } catch (err: any) {
         console.error('Gemini executor simulation failed:', err.message);
+        
+        let errorDetails = err.message || '';
+        if (errorDetails.includes('429') || errorDetails.includes('Too Many Requests') || errorDetails.includes('quota')) {
+          errorDetails = 'Rate limit exceeded for AI simulator (15 requests per minute). Please wait a moment and try again.';
+          res.status(429).json({ error: 'Execution Simulation Failed', details: errorDetails });
+          return;
+        }
+
         res.status(500).json({ error: 'AI Simulation fallback failed.', details: err.message });
         return;
       }
