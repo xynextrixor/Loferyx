@@ -2,8 +2,6 @@
 
 <div align="center">
 
-
-
 ### A Retro-Style Code Compiling Experience
 
 ✨ **Fast. Precise. Aesthetic.** ✨
