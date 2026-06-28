@@ -1,7 +1,6 @@
 # Loferyx Compiler
 
 
-
 <div align="center">
 
 ### A Retro-Style Code Compiling Experience
