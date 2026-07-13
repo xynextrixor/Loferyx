@@ -19,8 +19,12 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { useProgramInputs } from "../hooks/useProgramInputs";
+import { ProgramInputsPanel } from "./ProgramInputsPanel";
 
 export interface OutputPanelProps {
+  code?: string;
+  language?: string;
   output: string;
   error: string;
   executionTime: number | null;
@@ -37,6 +41,8 @@ export interface OutputPanelProps {
 }
 
 export const OutputPanel: React.FC<OutputPanelProps> = ({
+  code = "",
+  language = "",
   output,
   error,
   executionTime,
@@ -48,6 +54,14 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
   metrics,
 }) => {
   const [activeTab, setActiveTab] = useState<"console" | "metrics">("console");
+  const { inputs, values, handleValueChange, generateStdin } = useProgramInputs(code, language);
+
+  // Sync generated stdin with parent state whenever inputs or values change
+  React.useEffect(() => {
+    if (inputs.length > 0 && onStdinChange) {
+      onStdinChange(generateStdin());
+    }
+  }, [inputs, values, generateStdin, onStdinChange]);
 
   return (
     <div
@@ -146,18 +160,27 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
             )}
 
             {/* STDIN Input Area */}
-            <div className="space-y-1 mb-4">
-              <div className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400 tracking-wider mb-2 select-none border-b border-zinc-200 dark:border-zinc-800 pb-0.5 max-w-max">
-                STDIN (Standard Input)
-              </div>
-              <textarea
-                value={stdin || ""}
-                onChange={(e) => onStdinChange && onStdinChange(e.target.value)}
-                placeholder="Enter terminal input here..."
-                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white font-mono text-xs p-3 border border-zinc-200 dark:border-zinc-800 rounded outline-none focus:border-red-500 transition-colors resize-y min-h-[60px]"
-                disabled={isLoading}
+            {inputs.length > 0 ? (
+              <ProgramInputsPanel
+                inputs={inputs}
+                values={values}
+                onChange={handleValueChange}
+                generatedStdin={generateStdin()}
               />
-            </div>
+            ) : (
+              <div className="space-y-1 mb-4">
+                <div className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400 tracking-wider mb-2 select-none border-b border-zinc-200 dark:border-zinc-800 pb-0.5 max-w-max">
+                  STDIN (Standard Input)
+                </div>
+                <textarea
+                  value={stdin || ""}
+                  onChange={(e) => onStdinChange && onStdinChange(e.target.value)}
+                  placeholder="Enter terminal input here..."
+                  className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white font-mono text-xs p-3 border border-zinc-200 dark:border-zinc-800 rounded outline-none focus:border-red-500 transition-colors resize-y min-h-[60px]"
+                  disabled={isLoading}
+                />
+              </div>
+            )}
 
             {/* stdout - strictly white as per request */}
             {!isLoading && output && (

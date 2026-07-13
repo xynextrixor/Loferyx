@@ -301,7 +301,7 @@ Request: ${prompt}`
       return;
     }
 
-    const validLanguages = ['python', 'javascript', 'java', 'cpp', 'csharp', 'c'];
+    const validLanguages = ['python', 'javascript', 'java', 'cpp', 'csharp', 'c', 'rust'];
     if (!language || !validLanguages.includes(language)) {
       res.status(400).json({ error: 'Invalid or missing language.' });
       return;
@@ -394,7 +394,8 @@ ${code}`;
         java: 'openjdk-25',
         cpp: 'g++-15',
         csharp: 'dotnet-csharp-9',
-        c: 'gcc-15'
+        c: 'gcc-15',
+        rust: 'rust-1.85'
       };
       
       const compiler = compilerMap[language] || language;

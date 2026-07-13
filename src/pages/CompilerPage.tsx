@@ -1235,6 +1235,8 @@ export const CompilerPage: React.FC = () => {
                 id="gala-console-container"
               >
                 <OutputPanel
+                  code={code}
+                  language={language}
                   output={output}
                   error={errorObj}
                   executionTime={executionTime}
@@ -1428,6 +1430,8 @@ export const CompilerPage: React.FC = () => {
               id="gala-console-container-mobile"
             >
               <OutputPanel
+                code={code}
+                language={language}
                 output={output}
                 error={errorObj}
                 executionTime={executionTime}
