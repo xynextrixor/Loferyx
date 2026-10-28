@@ -347,7 +347,10 @@ Do not add any explanation, thoughts, or preamble. Just the raw console output.
 If there is a compilation error or syntax error, output the error message exactly as a compiler or interpreter would.
 
 Code to execute:
-${code}`;
+${code}
+
+Standard Input:
+${input || "None"}`;
 
         const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash',

@@ -16,6 +16,8 @@ export const ProgramInputsPanel: React.FC<Props> = ({
   generatedStdin
 }) => {
   const [showPreview, setShowPreview] = useState(false);
+  const hasValue = (field: InputFieldDef) =>
+    field.datatype === 'checkbox' || Boolean(values[field.id]);
 
   if (inputs.length === 0) {
     return null;
@@ -65,7 +67,7 @@ export const ProgramInputsPanel: React.FC<Props> = ({
               />
             )}
             
-            {field.required && !values[field.id] && (
+            {field.required && !hasValue(field) && (
               <span className="text-[10px] text-red-500 font-medium">{field.label} is required</span>
             )}
           </div>
