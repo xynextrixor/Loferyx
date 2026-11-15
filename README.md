@@ -10,6 +10,9 @@
 
 ✨ **Fast. Precise. Aesthetic.** ✨
 
+
+
+
 [![Loferyx Compiler Screenshot](screenshot.png)](https://loferyx.onrender.com)
 
 ---
